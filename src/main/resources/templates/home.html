@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout/base :: layout(~{::title}, ~{::main})}"
+      lang="uk">
+<head>
+    <title>ВПО Платформа &mdash; Координація гуманітарної допомоги</title>
+</head>
+<body>
+<main>
+<!-- Hero Section -->
+<section class="hero-section text-white py-5 mb-4">
+    <div class="container py-3">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-6 text-center text-lg-start">
+                <h1 class="display-4 fw-bold mb-3">Платформа допомоги ВПО</h1>
+                <p class="lead mb-4 opacity-90">Об'єднуємо тих, хто потребує підтримки, з волонтерами та організаціями, що готові допомогти</p>
+                <div class="d-flex justify-content-center justify-content-lg-start gap-3 flex-wrap">
+                    <a href="/announcements?type=REQUEST" class="btn btn-warning btn-lg px-4">
+                        <i class="bi bi-hand-index-thumb me-2"></i>Потрібна допомога
+                    </a>
+                    <a href="/announcements?type=OFFER" class="btn btn-light btn-lg px-4">
+                        <i class="bi bi-gift me-2"></i>Хочу допомогти
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <svg viewBox="0 0 500 380" xmlns="http://www.w3.org/2000/svg" style="max-width:420px;width:100%;" aria-hidden="true">
+                    <!-- Background circle -->
+                    <circle cx="250" cy="190" r="170" fill="rgba(255,255,255,0.07)"/>
+                    <!-- House -->
+                    <polygon points="250,60 170,130 330,130" fill="#FFD500"/>
+                    <rect x="185" y="130" width="130" height="110" rx="4" fill="#ffffff" opacity="0.95"/>
+                    <rect x="225" y="175" width="50" height="65" rx="4" fill="#005BBB"/>
+                    <!-- Window left -->
+                    <rect x="197" y="148" width="35" height="28" rx="3" fill="#b3d1ff"/>
+                    <!-- Window right -->
+                    <rect x="270" y="148" width="35" height="28" rx="3" fill="#b3d1ff"/>
+                    <!-- Left person -->
+                    <circle cx="130" cy="215" r="22" fill="#FFD500"/>
+                    <rect x="108" y="237" width="44" height="55" rx="12" fill="#FFD500" opacity="0.85"/>
+                    <!-- Right person -->
+                    <circle cx="370" cy="215" r="22" fill="#ffffff" opacity="0.9"/>
+                    <rect x="348" y="237" width="44" height="55" rx="12" fill="#ffffff" opacity="0.75"/>
+                    <!-- Hands reaching -->
+                    <path d="M152 255 Q195 240 230 258" stroke="#FFD500" stroke-width="5" fill="none" stroke-linecap="round"/>
+                    <path d="M348 255 Q305 240 270 258" stroke="#ffffff" stroke-width="5" fill="none" opacity="0.85" stroke-linecap="round"/>
+                    <!-- Heart -->
+                    <path d="M250 268 C250 268 232 252 232 243 C232 237 237 232 244 232 C247 232 250 235 250 235 C250 235 253 232 256 232 C263 232 268 237 268 243 C268 252 250 268 250 268Z" fill="#e53935"/>
+                    <!-- Stars / sparkles -->
+                    <circle cx="155" cy="170" r="4" fill="#FFD500" opacity="0.7"/>
+                    <circle cx="345" cy="170" r="4" fill="#FFD500" opacity="0.7"/>
+                    <circle cx="250" cy="38" r="5" fill="#FFD500" opacity="0.8"/>
+                    <circle cx="115" cy="300" r="3" fill="#ffffff" opacity="0.5"/>
+                    <circle cx="385" cy="300" r="3" fill="#ffffff" opacity="0.5"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Search Bar -->
+<div class="container mb-5">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form action="/announcements" method="get" class="row g-2">
+                <div class="col-md-4">
+                    <input type="text" name="keyword" class="form-control" placeholder="Пошук оголошень...">
+                </div>
+                <div class="col-md-3">
+                    <select name="type" class="form-select">
+                        <option value="">Усі типи</option>
+                        <option value="OFFER">Пропозиції допомоги</option>
+                        <option value="REQUEST">Запити допомоги</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select name="categoryId" class="form-select">
+                        <option value="">Усі категорії</option>
+                        <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}"></option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-search me-1"></i>Знайти
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- How it works -->
+<div class="container mb-5">
+    <h2 class="text-center mb-4 fw-bold">Як працює платформа?</h2>
+    <div class="row g-4 text-center">
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <div class="feature-icon bg-primary text-white rounded-circle mx-auto mb-3">
+                        <i class="bi bi-person-plus-fill fs-3"></i>
+                    </div>
+                    <h5 class="fw-bold">1. Зареєструйтесь</h5>
+                    <p class="text-muted">Створіть акаунт як ВПО або надавач допомоги</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <div class="feature-icon bg-warning text-dark rounded-circle mx-auto mb-3">
+                        <i class="bi bi-search fs-3"></i>
+                    </div>
+                    <h5 class="fw-bold">2. Знайдіть або опублікуйте</h5>
+                    <p class="text-muted">Перегляньте оголошення або розмістіть своє</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <div class="feature-icon bg-success text-white rounded-circle mx-auto mb-3">
+                        <i class="bi bi-check-circle-fill fs-3"></i>
+                    </div>
+                    <h5 class="fw-bold">3. Отримайте допомогу</h5>
+                    <p class="text-muted">Зв'яжіться з надавачем і отримайте підтримку</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Latest Offers -->
+<div class="container mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold mb-0"><i class="bi bi-gift text-success me-2"></i>Нові пропозиції допомоги</h2>
+        <a href="/announcements?type=OFFER" class="btn btn-outline-success btn-sm">Всі пропозиції</a>
+    </div>
+    <div class="row g-3">
+        <div th:each="a : ${latestOffers}" class="col-md-4">
+            <div class="card h-100 shadow-sm announcement-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="badge bg-success">Пропозиція</span>
+                        <small class="text-muted" th:text="${#temporals.format(a.createdAt, 'dd.MM.yyyy')}"></small>
+                    </div>
+                    <h6 class="card-title fw-bold" th:text="${a.title}"></h6>
+                    <p class="card-text text-muted small" th:text="${#strings.abbreviate(a.description, 100)}"></p>
+                    <div class="d-flex justify-content-between align-items-center mt-2">
+                        <span class="text-muted small"><i class="bi bi-geo-alt me-1"></i><span th:text="${a.city}"></span></span>
+                        <a th:href="@{/announcements/{id}(id=${a.id})}" class="btn btn-sm btn-outline-primary">Детальніше</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div th:if="${#lists.isEmpty(latestOffers)}" class="col-12">
+            <p class="text-muted text-center">Поки немає оголошень</p>
+        </div>
+    </div>
+</div>
+
+<!-- Latest Requests -->
+<div class="container mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold mb-0"><i class="bi bi-hand-index-thumb text-warning me-2"></i>Нові запити допомоги</h2>
+        <a href="/announcements?type=REQUEST" class="btn btn-outline-warning btn-sm">Всі запити</a>
+    </div>
+    <div class="row g-3">
+        <div th:each="a : ${latestRequests}" class="col-md-4">
+            <div class="card h-100 shadow-sm announcement-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="badge bg-warning text-dark">Запит</span>
+                        <small class="text-muted" th:text="${#temporals.format(a.createdAt, 'dd.MM.yyyy')}"></small>
+                    </div>
+                    <h6 class="card-title fw-bold" th:text="${a.title}"></h6>
+                    <p class="card-text text-muted small" th:text="${#strings.abbreviate(a.description, 100)}"></p>
+                    <div class="d-flex justify-content-between align-items-center mt-2">
+                        <span class="text-muted small"><i class="bi bi-geo-alt me-1"></i><span th:text="${a.city}"></span></span>
+                        <a th:href="@{/announcements/{id}(id=${a.id})}" class="btn btn-sm btn-outline-warning">Детальніше</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div th:if="${#lists.isEmpty(latestRequests)}" class="col-12">
+            <p class="text-muted text-center">Поки немає запитів</p>
+        </div>
+    </div>
+</div>
+</main>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout/base :: layout(~{::title}, ~{::main})}"
+      lang="uk">
+<head>
+    <title>Особистий кабінет &mdash; ВПО Платформа</title>
+</head>
+<body>
+<main>
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-3">
+            <!-- Sidebar -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body text-center p-4">
+                    <i class="bi bi-person-circle fs-1 text-primary"></i>
+                    <h6 class="fw-bold mt-2" th:text="${user.fullName}"></h6>
+                    <p class="text-muted small mb-1" th:text="${user.email}"></p>
+                    <span th:class="${user.role.name() == 'VPO'} ? 'badge bg-warning text-dark' :
+                                   (${user.role.name() == 'PROVIDER'} ? 'badge bg-success' : 'badge bg-danger')"
+                          th:text="${user.role.name() == 'VPO'} ? 'ВПО' :
+                                   (${user.role.name() == 'PROVIDER'} ? 'Надавач' : 'Адміністратор')"></span>
+                </div>
+                <ul class="list-group list-group-flush sidebar-nav">
+                    <li th:classappend="${requestURI == '/cabinet'} ? 'active-item'" class="list-group-item">
+                        <a href="/cabinet" class="text-decoration-none text-dark">
+                            <i class="bi bi-house me-2"></i>Кабінет
+                        </a>
+                    </li>
+                    <li th:classappend="${requestURI == '/cabinet/announcements'} ? 'active-item'" class="list-group-item">
+                        <a href="/cabinet/announcements" class="text-decoration-none text-dark">
+                            <i class="bi bi-megaphone me-2"></i>Мої оголошення
+                        </a>
+                    </li>
+                    <li th:classappend="${requestURI == '/cabinet/applications'} ? 'active-item'" class="list-group-item">
+                        <a href="/cabinet/applications" class="text-decoration-none text-dark">
+                            <i class="bi bi-file-text me-2"></i>Заявки
+                        </a>
+                    </li>
+                    <li th:classappend="${requestURI == '/cabinet/notifications'} ? 'active-item'" class="list-group-item">
+                        <a href="/cabinet/notifications" class="text-decoration-none text-dark">
+                            <i class="bi bi-bell me-2"></i>Сповіщення
+                            <span th:if="${unreadCount > 0}" class="badge bg-danger rounded-pill"
+                                  th:text="${unreadCount}"></span>
+                        </a>
+                    </li>
+                    <li th:classappend="${requestURI == '/cabinet/profile'} ? 'active-item'" class="list-group-item">
+                        <a href="/cabinet/profile" class="text-decoration-none text-dark">
+                            <i class="bi bi-gear me-2"></i>Профіль
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="fw-bold mb-0">Мої оголошення</h3>
+                <a href="/announcements/new" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-2"></i>Нове оголошення
+                </a>
+            </div>
+
+            <div th:if="${#lists.isEmpty(announcements)}" class="empty-state">
+                <i class="bi bi-megaphone empty-icon"></i>
+                <h5>Немає оголошень</h5>
+                <p>Створіть своє перше оголошення щоб розпочати</p>
+                <a href="/announcements/new" class="btn btn-primary px-4">
+                    <i class="bi bi-plus-circle me-2"></i>Створити оголошення
+                </a>
+            </div>
+
+            <div class="row g-3" th:unless="${#lists.isEmpty(announcements)}">
+                <div th:each="a : ${announcements}" class="col-12">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="fw-bold mb-1" th:text="${a.title}"></h6>
+                                    <div class="d-flex gap-2 flex-wrap">
+                                        <span th:class="${a.type.name() == 'OFFER'} ? 'badge bg-success' : 'badge bg-warning text-dark'"
+                                              th:text="${a.type.name() == 'OFFER'} ? 'Пропозиція' : 'Запит'"></span>
+                                        <span th:switch="${a.status.name()}">
+                                            <span th:case="'PENDING'" class="badge bg-secondary">На модерації</span>
+                                            <span th:case="'PUBLISHED'" class="badge bg-success">Опубліковано</span>
+                                            <span th:case="'ARCHIVED'" class="badge bg-warning text-dark">Архів</span>
+                                            <span th:case="'REJECTED'" class="badge bg-danger">Відхилено</span>
+                                            <span th:case="'COMPLETED'" class="badge bg-info">Завершено</span>
+                                        </span>
+                                        <small class="text-muted" th:text="${a.city}"></small>
+                                    </div>
+                                    <small class="text-muted" th:if="${a.rejectionReason != null}">
+                                        Причина: <span th:text="${a.rejectionReason}"></span>
+                                    </small>
+                                </div>
+                                <div class="d-flex gap-1">
+                                    <a th:href="@{/announcements/{id}(id=${a.id})}" class="btn btn-sm btn-outline-secondary">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a th:if="${a.status.name() == 'PUBLISHED' || a.status.name() == 'REJECTED'}"
+                                       th:href="@{/announcements/{id}/edit(id=${a.id})}" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <form th:if="${a.status.name() == 'ARCHIVED'}"
+                                          th:action="@{/announcements/{id}/republish(id=${a.id})}" method="post" class="d-inline">
+                                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                        <button type="submit" class="btn btn-sm btn-outline-success"
+                                                title="Повторно опублікувати">
+                                            <i class="bi bi-arrow-repeat"></i>
+                                        </button>
+                                    </form>
+                                    <form th:if="${a.status.name() == 'PUBLISHED'}"
+                                          th:action="@{/announcements/{id}/complete(id=${a.id})}" method="post" class="d-inline">
+                                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                        <button type="submit" class="btn btn-sm btn-outline-info"
+                                                onclick="return confirm('Закрити оголошення?')"
+                                                title="Закрити">
+                                            <i class="bi bi-check2-circle"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</main>
+</body>
+</html>

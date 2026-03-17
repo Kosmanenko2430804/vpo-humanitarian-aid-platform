@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::title}, ~{::main})}"
+      lang="uk">
+<head>
+    <title>Каталог надавачів &mdash; ВПО Платформа</title>
+</head>
+<body>
+<main>
+<div class="container py-4">
+    <h2 class="fw-bold mb-4"><i class="bi bi-people me-2 text-primary"></i>Каталог надавачів</h2>
+
+    <!-- Filters -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <form action="/catalog/providers" method="get" class="row g-2"
+                  hx-get="/catalog/providers"
+                  hx-target="#results-container"
+                  hx-select="#results-container"
+                  hx-push-url="true">
+                <div class="col-md-3">
+                    <input type="text" name="city" class="form-control" placeholder="Місто"
+                           th:value="${currentCity}">
+                </div>
+                <div class="col-md-3">
+                    <select name="providerType" class="form-select">
+                        <option value="">Всі типи</option>
+                        <option value="VOLUNTEER" th:selected="${currentProviderType == 'VOLUNTEER'}">Волонтери</option>
+                        <option value="ORGANIZATION" th:selected="${currentProviderType == 'ORGANIZATION'}">Організації</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <select name="categoryId" class="form-select">
+                        <option value="">Всі категорії</option>
+                        <option th:each="cat : ${categories}"
+                                th:value="${cat.id}" th:text="${cat.name}"
+                                th:selected="${currentCategoryId != null && currentCategoryId == cat.id}"></option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-search me-1"></i>Фільтр
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Provider cards -->
+    <div id="results-container">
+    <div class="row g-3">
+        <div th:each="p : ${providers}" class="col-md-4">
+            <div class="card h-100 shadow-sm provider-card">
+                <div class="card-body text-center p-4">
+                    <img th:if="${p.orgLogoUrl != null}" th:src="${p.orgLogoUrl}"
+                         class="rounded-circle mb-2" style="width:64px;height:64px;object-fit:cover;" alt="logo">
+                    <i th:unless="${p.orgLogoUrl != null}" class="bi bi-person-circle fs-1 text-muted d-block mb-2"></i>
+                    <h6 class="fw-bold" th:text="${p.orgName != null ? p.orgName : p.fullName}"></h6>
+                    <span th:class="${p.providerType != null && p.providerType.name() == 'ORGANIZATION'} ? 'badge bg-primary' : 'badge bg-secondary'"
+                          th:text="${p.providerType != null && p.providerType.name() == 'ORGANIZATION'} ? 'Організація' : 'Волонтер'"></span>
+                    <p class="text-muted small mt-2" th:text="${p.city}"></p>
+                    <div th:if="${p.rating != null}" class="mb-2">
+                        <i class="bi bi-star-fill text-warning"></i>
+                        <span th:text="${p.rating}"></span>
+                        <small class="text-muted">(<span th:text="${p.ratingCount}"></span>)</small>
+                    </div>
+                    <div class="d-flex flex-wrap gap-1 justify-content-center mb-3">
+                        <span th:each="cat : ${p.providerCategories}"
+                              class="badge bg-light text-dark border small" th:text="${cat.name}"></span>
+                    </div>
+                    <a th:href="@{/catalog/providers/{id}(id=${p.id})}" class="btn btn-sm btn-outline-primary w-100">
+                        Переглянути профіль
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div th:if="${#lists.isEmpty(providers)}" class="col-12 text-center py-5">
+            <i class="bi bi-inbox fs-1 text-muted"></i>
+            <p class="text-muted mt-2">Надавачів не знайдено</p>
+        </div>
+    </div>
+    </div><!-- /results-container -->
+</div>
+</main>
+</body>
+</html>

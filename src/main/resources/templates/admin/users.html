@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::title}, ~{::main})}"
+      lang="uk">
+<head>
+    <title>Користувачі &mdash; Адмін</title>
+</head>
+<body>
+<main>
+<div class="container py-4">
+    <h3 class="fw-bold mb-4"><i class="bi bi-people me-2 text-primary"></i>Користувачі</h3>
+    <div class="table-responsive">
+        <table class="table table-hover shadow-sm">
+            <thead class="table-dark">
+            <tr>
+                <th>ID</th><th>ПІБ</th><th>Email</th><th>Роль</th><th>Місто</th><th>Статус</th><th>Дії</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="u : ${users}" th:class="${u.isBlocked} ? 'table-danger' : ''">
+                <td th:text="${u.id}"></td>
+                <td th:text="${u.fullName}"></td>
+                <td th:text="${u.email}"></td>
+                <td>
+                    <span th:text="${u.role}"></span>
+                    <small th:if="${u.providerType != null}" class="text-muted" th:text="'/' + ${u.providerType}"></small>
+                </td>
+                <td th:text="${u.city}"></td>
+                <td>
+                    <span th:class="${u.isBlocked} ? 'badge bg-danger' : 'badge bg-success'"
+                          th:text="${u.isBlocked} ? 'Заблоковано' : 'Активний'"></span>
+                </td>
+                <td>
+                    <form th:action="@{/admin/users/{id}/toggle-block(id=${u.id})}" method="post" class="d-inline">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                        <button type="submit" th:class="${u.isBlocked} ? 'btn btn-sm btn-success' : 'btn btn-sm btn-danger'"
+                                th:text="${u.isBlocked} ? 'Розблокувати' : 'Заблокувати'"></button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</main>
+</body>
+</html>

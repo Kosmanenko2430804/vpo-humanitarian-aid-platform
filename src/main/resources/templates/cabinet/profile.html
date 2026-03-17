@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout/base :: layout(~{::title}, ~{::main})}"
+      lang="uk">
+<head>
+    <title>Профіль &mdash; ВПО Платформа</title>
+</head>
+<body>
+<main>
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-body p-4">
+                    <h3 class="fw-bold mb-4"><i class="bi bi-gear me-2"></i>Редагувати профіль</h3>
+                    <form th:action="@{/cabinet/profile}" method="post">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Повне ім'я *</label>
+                                <input type="text" name="fullName" class="form-control" required
+                                       th:value="${user.fullName}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Телефон</label>
+                                <input type="tel" name="phone" class="form-control" th:value="${user.phone}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Місто</label>
+                                <input type="text" name="city" class="form-control" th:value="${user.city}">
+                            </div>
+
+                            <!-- Organization fields -->
+                            <div th:if="${user.role.name() == 'PROVIDER'}" class="col-12">
+                                <hr>
+                                <h5>Налаштування надавача</h5>
+                            </div>
+                            <div th:if="${user.providerType != null && user.providerType.name() == 'ORGANIZATION'}" class="col-md-6">
+                                <label class="form-label">Назва організації</label>
+                                <input type="text" name="orgName" class="form-control" th:value="${user.orgName}">
+                            </div>
+                            <div th:if="${user.providerType != null && user.providerType.name() == 'ORGANIZATION'}" class="col-12">
+                                <label class="form-label">Опис організації</label>
+                                <textarea name="orgDescription" class="form-control" rows="3"
+                                          th:text="${user.orgDescription}" placeholder="Розкажіть про свою організацію..."></textarea>
+                            </div>
+                            <div th:if="${user.providerType != null && user.providerType.name() == 'ORGANIZATION'}" class="col-12">
+                                <label class="form-label">URL логотипу</label>
+                                <input type="url" name="orgLogoUrl" class="form-control" th:value="${user.orgLogoUrl}">
+                            </div>
+
+                            <div th:if="${user.role.name() == 'PROVIDER'}" class="col-12">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" name="isProfilePublic"
+                                           id="isPublic" th:checked="${user.isProfilePublic}">
+                                    <label class="form-check-label" for="isPublic">
+                                        Показувати профіль у каталозі надавачів
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div th:if="${user.role.name() == 'PROVIDER'}" class="col-12">
+                                <label class="form-label fw-bold">Категорії допомоги, яку я надаю</label>
+                                <div class="row g-2">
+                                    <div th:each="cat : ${allCategories}" class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"
+                                                   name="providerCategoryIds" th:value="${cat.id}"
+                                                   th:id="'pcat' + ${cat.id}"
+                                                   th:checked="${user.providerCategories.contains(cat)}">
+                                            <label class="form-check-label" th:for="'pcat' + ${cat.id}"
+                                                   th:text="${cat.name}"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check2 me-2"></i>Зберегти зміни
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</main>
+</body>
+</html>

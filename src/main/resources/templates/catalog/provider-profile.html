@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::title}, ~{::main})}"
+      lang="uk">
+<head>
+    <title th:text="${provider.orgName != null ? provider.orgName : provider.fullName} + ' — ВПО Платформа'">Профіль</title>
+</head>
+<body>
+<main>
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body text-center p-4">
+                    <img th:if="${provider.orgLogoUrl != null}" th:src="${provider.orgLogoUrl}"
+                         class="rounded-circle mb-3" style="width:100px;height:100px;object-fit:cover;" alt="">
+                    <i th:unless="${provider.orgLogoUrl != null}" class="bi bi-person-circle fs-1 text-muted d-block mb-3"></i>
+                    <h4 class="fw-bold" th:text="${provider.orgName != null ? provider.orgName : provider.fullName}"></h4>
+                    <span th:class="${provider.providerType != null && provider.providerType.name() == 'ORGANIZATION'} ? 'badge bg-primary' : 'badge bg-secondary'"
+                          th:text="${provider.providerType != null && provider.providerType.name() == 'ORGANIZATION'} ? 'Організація' : 'Волонтер'"></span>
+                    <p class="text-muted mt-2" th:text="${provider.city}"></p>
+                    <p th:if="${provider.phone != null}" class="text-muted small mb-1">
+                        <i class="bi bi-telephone me-1"></i><span th:text="${provider.phone}"></span>
+                    </p>
+                    <div th:if="${provider.rating != null}" class="mb-3">
+                        <i class="bi bi-star-fill text-warning fs-5"></i>
+                        <span class="fs-5 fw-bold" th:text="${provider.rating}"></span>
+                        <small class="text-muted">(<span th:text="${provider.ratingCount}"></span> відгуків)</small>
+                    </div>
+                    <p th:if="${provider.orgDescription}" class="text-muted small" th:text="${provider.orgDescription}"></p>
+                    <div class="d-flex flex-wrap gap-1 justify-content-center">
+                        <span th:each="cat : ${provider.providerCategories}"
+                              class="badge bg-light text-dark border" th:text="${cat.name}"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <h4 class="fw-bold mb-3">
+                Активні оголошення
+                <span class="badge bg-primary ms-2" th:text="${#lists.size(announcements)}"></span>
+            </h4>
+            <div th:if="${#lists.isEmpty(announcements)}" class="text-muted">Немає активних оголошень</div>
+            <div class="row g-3" th:unless="${#lists.isEmpty(announcements)}">
+                <div th:each="a : ${announcements}" class="col-md-6">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <span class="badge bg-success mb-2">Пропозиція</span>
+                            <h6 class="fw-bold" th:text="${a.title}"></h6>
+                            <p class="text-muted small" th:text="${#strings.abbreviate(a.description, 80)}"></p>
+                            <a th:href="@{/announcements/{id}(id=${a.id})}" class="btn btn-sm btn-outline-primary">Детальніше</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</main>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::title}, ~{::main})}"
+      lang="uk">
+<head>
+    <title>Адмін-панель &mdash; ВПО Платформа</title>
+</head>
+<body>
+<main>
+<div class="container py-4">
+    <h2 class="fw-bold mb-4"><i class="bi bi-shield-check me-2 text-danger"></i>Адмін-панель</h2>
+    <div class="row g-4">
+        <div class="col-md-4">
+            <a href="/admin/moderation" class="text-decoration-none">
+                <div class="card shadow-sm text-center p-4 border-warning h-100">
+                    <i class="bi bi-hourglass-split fs-1 text-warning mb-2"></i>
+                    <h4 th:text="${pendingCount}">0</h4>
+                    <p class="text-muted mb-0">Оголошень на модерації</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="/admin/complaints" class="text-decoration-none">
+                <div class="card shadow-sm text-center p-4 border-danger h-100">
+                    <i class="bi bi-flag fs-1 text-danger mb-2"></i>
+                    <h4 th:text="${complaintsCount}">0</h4>
+                    <p class="text-muted mb-0">Нових скарг</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="/admin/users" class="text-decoration-none">
+                <div class="card shadow-sm text-center p-4 border-primary h-100">
+                    <i class="bi bi-people fs-1 text-primary mb-2"></i>
+                    <p class="mb-0 text-muted">Управління</p>
+                    <p class="mb-0 fw-bold">Користувачами</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+</main>
+</body>
+</html>

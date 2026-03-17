@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::title}, ~{::main})}"
+      lang="uk">
+<head>
+    <title>Реєстрація &mdash; ВПО Платформа</title>
+</head>
+<body>
+<main>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-body p-4">
+                    <h3 class="card-title text-center mb-4 fw-bold">
+                        <i class="bi bi-person-plus me-2 text-primary"></i>Реєстрація
+                    </h3>
+                    <div th:if="${error}" class="alert alert-danger">
+                        <span th:text="${error}"></span>
+                        <span th:if="${error != null && #strings.contains(error, 'вже існує')}">
+                            &nbsp;<a href="/auth/login" class="alert-link">Увійдіть</a>
+                        </span>
+                    </div>
+
+                    <form th:action="@{/auth/register}" method="post" id="registerForm"
+                          th:object="${registerForm}">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+                        <!-- Role selection -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Я хочу:</label>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <input type="radio" class="btn-check" name="role" id="roleVPO" value="VPO" required>
+                                    <label class="btn btn-outline-warning w-100 py-3" for="roleVPO">
+                                        <i class="bi bi-hand-index-thumb d-block fs-4 mb-1"></i>
+                                        Отримати допомогу
+                                    </label>
+                                </div>
+                                <div class="col-6">
+                                    <input type="radio" class="btn-check" name="role" id="roleProvider" value="PROVIDER">
+                                    <label class="btn btn-outline-success w-100 py-3" for="roleProvider">
+                                        <i class="bi bi-gift d-block fs-4 mb-1"></i>
+                                        Надати допомогу
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Provider type (shown only for PROVIDER) -->
+                        <div id="providerTypeSection" class="mb-4 d-none">
+                            <label class="form-label fw-bold">Тип надавача:</label>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <input type="radio" class="btn-check" name="providerType" id="typeVolunteer" value="VOLUNTEER">
+                                    <label class="btn btn-outline-primary w-100 py-2" for="typeVolunteer">
+                                        <i class="bi bi-person-heart d-block mb-1"></i>Волонтер
+                                    </label>
+                                </div>
+                                <div class="col-6">
+                                    <input type="radio" class="btn-check" name="providerType" id="typeOrg" value="ORGANIZATION">
+                                    <label class="btn btn-outline-primary w-100 py-2" for="typeOrg">
+                                        <i class="bi bi-building d-block mb-1"></i>Організація
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Org name (shown only for ORGANIZATION) -->
+                        <div id="orgSection" class="mb-3 d-none">
+                            <label class="form-label">Назва організації</label>
+                            <input type="text" name="orgName" class="form-control" placeholder="Благодійний фонд...">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Повне ім'я</label>
+                            <input type="text" th:field="*{fullName}" class="form-control" required placeholder="Іван Іваненко"
+                                   th:classappend="${#fields.hasErrors('fullName')} ? 'is-invalid'">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" th:field="*{email}" class="form-control" required placeholder="your@email.com"
+                                   th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Пароль</label>
+                            <input type="password" th:field="*{password}" class="form-control" required minlength="6" placeholder="Мінімум 6 символів"
+                                   th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label class="form-label">Телефон</label>
+                                <input type="tel" name="phone" class="form-control" placeholder="+380...">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label">Місто</label>
+                                <input type="text" name="city" class="form-control" placeholder="Київ">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 mb-3">
+                            <i class="bi bi-person-check me-2"></i>Зареєструватися
+                        </button>
+                    </form>
+
+                    <p class="text-center mb-0">
+                        Вже є акаунт? <a href="/auth/login" class="text-primary fw-bold">Увійти</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.querySelectorAll('input[name="role"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        const providerSection = document.getElementById('providerTypeSection');
+        if (this.value === 'PROVIDER') {
+            providerSection.classList.remove('d-none');
+        } else {
+            providerSection.classList.add('d-none');
+            document.getElementById('orgSection').classList.add('d-none');
+        }
+    });
+});
+document.querySelectorAll('input[name="providerType"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        const orgSection = document.getElementById('orgSection');
+        if (this.value === 'ORGANIZATION') {
+            orgSection.classList.remove('d-none');
+        } else {
+            orgSection.classList.add('d-none');
+        }
+    });
+});
+</script>
+</main>
+</body>
+</html>
