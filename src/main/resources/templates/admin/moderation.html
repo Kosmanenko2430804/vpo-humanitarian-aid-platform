@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::title}, ~{::main})}"
+      lang="uk">
+<head>
+    <title>Модерація &mdash; Адмін</title>
+</head>
+<body>
+<main>
+<div class="container py-4">
+    <h3 class="fw-bold mb-4"><i class="bi bi-hourglass-split me-2 text-warning"></i>Оголошення на модерації</h3>
+    <div th:if="${#lists.isEmpty(announcements)}" class="text-center py-5">
+        <i class="bi bi-check-circle fs-1 text-success"></i>
+        <p class="text-muted mt-2">Немає оголошень для модерації</p>
+    </div>
+    <div class="row g-3" th:unless="${#lists.isEmpty(announcements)}">
+        <div th:each="a : ${announcements}" class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-7">
+                            <h6 class="fw-bold mb-1" th:text="${a.title}"></h6>
+                            <p class="text-muted small mb-1" th:text="${#strings.abbreviate(a.description, 200)}"></p>
+                            <div class="d-flex gap-2">
+                                <span th:class="${a.type.name() == 'OFFER'} ? 'badge bg-success' : 'badge bg-warning text-dark'"
+                                      th:text="${a.type}"></span>
+                                <span class="text-muted small" th:text="${a.city}"></span>
+                                <span class="text-muted small" th:text="${a.author.fullName}"></span>
+                                <a th:href="@{/announcements/{id}(id=${a.id})}" class="btn btn-sm btn-link p-0">Переглянути</a>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="d-flex gap-2 justify-content-end">
+                                <form th:action="@{/admin/moderation/{id}/approve(id=${a.id})}" method="post"
+                                      th:attr="hx-post=@{/admin/moderation/{id}/approve(id=${a.id})}"
+                                      hx-target="closest .col-12"
+                                      hx-swap="outerHTML">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                    <button type="submit" class="btn btn-success btn-sm">
+                                        <i class="bi bi-check2 me-1"></i>Підтвердити
+                                    </button>
+                                </form>
+                                <div class="d-flex gap-1">
+                                    <form th:action="@{/admin/moderation/{id}/reject(id=${a.id})}" method="post"
+                                          class="d-flex gap-1"
+                                          th:attr="hx-post=@{/admin/moderation/{id}/reject(id=${a.id})}"
+                                          hx-target="closest .col-12"
+                                          hx-swap="outerHTML">
+                                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                        <input type="text" name="reason" class="form-control form-control-sm"
+                                               required placeholder="Причина відхилення">
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                            <i class="bi bi-x"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</main>
+</body>
+</html>
