@@ -12,6 +12,35 @@ spring:
     properties:
       hibernate:
         format_sql: true
-    open-in-view: false
+    open-in-view: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope: email, profile
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  thymeleaf:
+    cache: false
+
 server:
-  port: 8080
+  port: ${PORT}
+
+app:
+  base-url: ${APP_BASE_URL}
+
+liqpay:
+  public-key: ${LIQPAY_PUBLIC_KEY}
+  private-key: ${LIQPAY_PRIVATE_KEY}
