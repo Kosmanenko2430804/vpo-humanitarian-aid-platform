@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::title}, ~{::main})}"
+      lang="uk">
+<head>
+    <title>Оголошення &mdash; ВПО Платформа</title>
+</head>
+<body>
+<main>
+<div class="container py-4">
+    <h2 class="fw-bold mb-4"><i class="bi bi-megaphone me-2 text-primary"></i>Оголошення</h2>
+
+    <!-- Filters -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <form action="/announcements" method="get" class="row g-2"
+                  hx-get="/announcements"
+                  hx-target="#results-container"
+                  hx-select="#results-container"
+                  hx-push-url="true">
+                <div class="col-md-3">
+                    <input type="text" name="keyword" class="form-control" placeholder="Пошук..."
+                           th:value="${currentKeyword}">
+                </div>
+                <div class="col-md-2">
+                    <select name="type" class="form-select">
+                        <option value="" th:selected="${currentType == null}">Всі типи</option>
+                        <option value="OFFER" th:selected="${currentType == 'OFFER'}">Пропозиції</option>
+                        <option value="REQUEST" th:selected="${currentType == 'REQUEST'}">Запити</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select name="categoryId" class="form-select">
+                        <option value="">Всі категорії</option>
+                        <option th:each="cat : ${categories}"
+                                th:value="${cat.id}"
+                                th:text="${cat.name}"
+                                th:selected="${currentCategoryId != null && currentCategoryId == cat.id}"></option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" name="city" class="form-control" placeholder="Місто"
+                           th:value="${currentCity}">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-search me-1"></i>Фільтр
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Results -->
+    <div id="results-container">
+    <div class="row g-3" id="announcementsList">
+        <div th:each="a : ${announcements.content}" class="col-md-4">
+            <div class="card h-100 shadow-sm announcement-card">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span th:class="${a.type.name() == 'OFFER'} ? 'badge bg-success' : 'badge bg-warning text-dark'"
+                              th:text="${a.type.name() == 'OFFER'} ? 'Пропозиція' : 'Запит'"></span>
+                        <small class="text-muted" th:text="${#temporals.format(a.createdAt, 'dd.MM.yyyy')}"></small>
+                    </div>
+                    <h6 class="card-title fw-bold" th:text="${a.title}"></h6>
+                    <p class="card-text text-muted small flex-grow-1" th:text="${#strings.abbreviate(a.description, 120)}"></p>
+
+                    <div class="mt-2">
+                        <div class="d-flex flex-wrap gap-1 mb-2">
+                            <span th:each="cat : ${a.categories}"
+                                  class="badge bg-light text-dark border" th:text="${cat.name}"></span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted small"><i class="bi bi-geo-alt me-1"></i><span th:text="${a.city}"></span></span>
+                            <a th:href="@{/announcements/{id}(id=${a.id})}" class="btn btn-sm btn-outline-primary">
+                                Детальніше
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${announcements.totalElements == 0}" class="col-12">
+            <div class="text-center py-5">
+                <i class="bi bi-inbox fs-1 text-muted"></i>
+                <p class="text-muted mt-2">Оголошень не знайдено</p>
+                <a href="/announcements" class="btn btn-outline-primary">Показати всі</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <nav th:if="${announcements.totalPages > 1}" class="mt-4">
+        <ul class="pagination justify-content-center">
+            <li th:class="${announcements.first} ? 'page-item disabled' : 'page-item'">
+                <a class="page-link"
+                   th:href="@{/announcements(page=${announcements.number - 1}, type=${currentType}, city=${currentCity}, keyword=${currentKeyword}, categoryId=${currentCategoryId})}">
+                    &laquo;
+                </a>
+            </li>
+            <li th:each="i : ${#numbers.sequence(0, announcements.totalPages - 1)}"
+                th:class="${i == announcements.number} ? 'page-item active' : 'page-item'">
+                <a class="page-link"
+                   th:href="@{/announcements(page=${i}, type=${currentType}, city=${currentCity}, keyword=${currentKeyword}, categoryId=${currentCategoryId})}"
+                   th:text="${i + 1}"></a>
+            </li>
+            <li th:class="${announcements.last} ? 'page-item disabled' : 'page-item'">
+                <a class="page-link"
+                   th:href="@{/announcements(page=${announcements.number + 1}, type=${currentType}, city=${currentCity}, keyword=${currentKeyword}, categoryId=${currentCategoryId})}">
+                    &raquo;
+                </a>
+            </li>
+        </ul>
+    </nav>
+    </div><!-- /results-container -->
+</div>
+</main>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout/base :: layout(~{::title}, ~{::main})}"
+      lang="uk">
+<head>
+    <title th:text="${announcement.title} + ' — ВПО Платформа'">Оголошення</title>
+</head>
+<body>
+<main>
+<div class="container py-4">
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Головна</a></li>
+            <li class="breadcrumb-item"><a href="/announcements" class="text-decoration-none">Оголошення</a></li>
+            <li class="breadcrumb-item active" th:text="${announcement.title}"></li>
+        </ol>
+    </nav>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <span th:class="${announcement.type.name() == 'OFFER'} ? 'badge bg-success fs-6' : 'badge bg-warning text-dark fs-6'"
+                              th:text="${announcement.type.name() == 'OFFER'} ? 'Пропозиція допомоги' : 'Запит допомоги'"></span>
+                        <small class="text-muted" th:text="${#temporals.format(announcement.createdAt, 'dd.MM.yyyy HH:mm')}"></small>
+                    </div>
+
+                    <h2 class="fw-bold mb-3" th:text="${announcement.title}"></h2>
+
+                    <div class="mb-3">
+                        <span th:each="cat : ${announcement.categories}"
+                              class="badge bg-light text-dark border me-1" th:text="${cat.name}"></span>
+                    </div>
+
+                    <p class="text-body" th:text="${announcement.description}" style="white-space: pre-wrap;"></p>
+
+                    <div class="mt-3 d-flex gap-3">
+                        <span class="text-muted"><i class="bi bi-geo-alt me-1"></i><span th:text="${announcement.city}"></span></span>
+                        <span class="text-muted"><i class="bi bi-person me-1"></i><span th:text="${announcement.author.fullName}"></span></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Apply form for VPO -->
+            <div th:if="${currentUser != null && currentUser.role.name() == 'VPO' && announcement.type.name() == 'OFFER' && announcement.acceptsApplications}"
+                 class="card shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-send me-2 text-primary"></i>Подати заявку</h5>
+                    <div th:if="${alreadyApplied}" class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>Ви вже подали заявку на це оголошення
+                    </div>
+                    <form th:unless="${alreadyApplied}" th:action="@{/applications/apply/{id}(id=${announcement.id})}" method="post">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                        <div class="mb-3">
+                            <label class="form-label">Ваше повідомлення</label>
+                            <textarea name="message" class="form-control" rows="4" required
+                                      placeholder="Розкажіть про свою ситуацію..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-send me-2"></i>Надіслати заявку
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Donate button for REQUEST announcements -->
+            <div th:if="${announcement.type.name() == 'REQUEST'}" class="card shadow-sm mb-4 border-warning">
+                <div class="card-body p-4 text-center">
+                    <h5 class="fw-bold"><i class="bi bi-heart text-danger me-2"></i>Підтримати фінансово</h5>
+                    <p class="text-muted">Ви можете зробити благодійний внесок для цієї людини</p>
+                    <a th:href="@{/payment/donate/{id}(id=${announcement.id})}" class="btn btn-warning btn-lg">
+                        <i class="bi bi-credit-card me-2"></i>Задонатити через LiqPay
+                    </a>
+                </div>
+            </div>
+
+            <!-- Complaint form -->
+            <div sec:authorize="isAuthenticated()" class="card shadow-sm mb-4">
+                <div class="card-body p-3">
+                    <details>
+                        <summary class="text-muted small cursor-pointer">
+                            <i class="bi bi-flag me-1"></i>Поскаржитись на оголошення
+                        </summary>
+                        <form th:action="@{/announcements/{id}/complaint(id=${announcement.id})}" method="post" class="mt-3">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                            <div class="mb-2">
+                                <textarea name="reason" class="form-control form-control-sm" rows="3"
+                                          required placeholder="Причина скарги..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Надіслати скаргу</button>
+                        </form>
+                    </details>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <!-- Author info -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-4 text-center">
+                    <i class="bi bi-person-circle fs-1 text-muted"></i>
+                    <h6 class="fw-bold mt-2" th:text="${announcement.author.fullName}"></h6>
+                    <p class="text-muted small" th:text="${announcement.author.city}"></p>
+                    <div th:if="${announcement.author.rating != null}" class="mb-2">
+                        <i class="bi bi-star-fill text-warning"></i>
+                        <span th:text="${announcement.author.rating}"></span>
+                        <small class="text-muted">(<span th:text="${announcement.author.ratingCount}"></span> відгуків)</small>
+                    </div>
+                    <a th:if="${announcement.author.isProfilePublic}"
+                       th:href="@{/catalog/providers/{id}(id=${announcement.author.id})}"
+                       class="btn btn-sm btn-outline-primary w-100">
+                        Переглянути профіль
+                    </a>
+                </div>
+            </div>
+
+            <!-- Status badge — visible to author and admin only -->
+            <div th:if="${currentUser != null && (currentUser.id == announcement.author.id || currentUser.role.name() == 'ADMIN')}"
+                 class="card shadow-sm">
+                <div class="card-body p-3 text-center">
+                    <small class="text-muted d-block mb-1">Статус</small>
+                    <span class="badge bg-success fs-6" th:text="${announcement.status}"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</main>
+</body>
+</html>
