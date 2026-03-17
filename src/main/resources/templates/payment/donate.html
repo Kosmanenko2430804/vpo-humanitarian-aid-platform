@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::title}, ~{::main})}"
+      lang="uk">
+<head>
+    <title>Підтримати &mdash; ВПО Платформа</title>
+</head>
+<body>
+<main>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow border-warning">
+                <div class="card-body p-4 text-center">
+                    <i class="bi bi-heart-fill text-danger fs-1 mb-3"></i>
+                    <h4 class="fw-bold mb-2">Підтримати фінансово</h4>
+                    <p class="text-muted mb-1">Оголошення:</p>
+                    <h6 class="mb-4" th:text="${announcement.title}"></h6>
+
+                    <form th:action="@{/payment/donate/{id}(id=${announcement.id})}" method="post">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Сума (грн)</label>
+                            <input type="number" name="amount" class="form-control form-control-lg text-center"
+                                   min="1" step="0.01" required placeholder="500">
+                        </div>
+                        <button type="submit" class="btn btn-warning btn-lg w-100">
+                            <i class="bi bi-credit-card me-2"></i>Перейти до оплати (LiqPay)
+                        </button>
+                    </form>
+                    <a th:href="@{/announcements/{id}(id=${announcement.id})}" class="btn btn-link mt-2">Назад</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</main>
+</body>
+</html>
