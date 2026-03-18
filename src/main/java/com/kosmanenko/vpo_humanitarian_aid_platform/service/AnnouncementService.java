@@ -12,14 +12,17 @@ import com.kosmanenko.vpo_humanitarian_aid_platform.model.User;
 import com.kosmanenko.vpo_humanitarian_aid_platform.repository.AnnouncementRepository;
 import com.kosmanenko.vpo_humanitarian_aid_platform.repository.CategoryRepository;
 import com.kosmanenko.vpo_humanitarian_aid_platform.repository.HelpApplicationRepository;
+import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -27,11 +30,9 @@ import java.util.stream.Collectors;
 
 /**
  * Сервіс для управління оголошеннями про гуманітарну допомогу.
- * <p>
  * Відповідає за створення, редагування, модерацію (затвердження/відхилення),
  * архівування та завершення оголошень. Публікує події Spring для надсилання
  * сповіщень після кожної зміни статусу.
- * </p>
  */
 @Service
 @RequiredArgsConstructor
@@ -113,14 +114,33 @@ public class AnnouncementService {
      */
     public Page<Announcement> search(AnnouncementType type, String city, Long categoryId, String keyword, int page) {
         PageRequest pageable = PageRequest.of(page, 12);
-        // Перетворюємо фільтри на шаблони LIKE або null для ігнорування
         String cityLike = (city != null && !city.isBlank()) ? "%" + city.toLowerCase() + "%" : null;
         String keywordLike = (keyword != null && !keyword.isBlank()) ? "%" + keyword.toLowerCase() + "%" : null;
-        if (categoryId != null) {
-            // Запит з JOIN по таблиці категорій
-            return announcementRepository.searchAnnouncementsWithCategory(type, cityLike, categoryId, keywordLike, pageable);
-        }
-        return announcementRepository.searchAnnouncements(type, cityLike, keywordLike, pageable);
+
+        Specification<Announcement> spec = (root, query, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            predicates.add(cb.equal(root.get("status"), AnnouncementStatus.PUBLISHED));
+            if (type != null) {
+                predicates.add(cb.equal(root.get("type"), type));
+            }
+            if (cityLike != null) {
+                predicates.add(cb.like(cb.lower(root.get("city")), cityLike));
+            }
+            if (keywordLike != null) {
+                predicates.add(cb.or(
+                    cb.like(cb.lower(root.get("title")), keywordLike),
+                    cb.like(cb.lower(root.get("description")), keywordLike)
+                ));
+            }
+            if (categoryId != null) {
+                predicates.add(cb.equal(root.join("categories").get("id"), categoryId));
+                query.distinct(true);
+            }
+            query.orderBy(cb.desc(root.get("createdAt")));
+            return cb.and(predicates.toArray(new Predicate[0]));
+        };
+
+        return announcementRepository.findAll(spec, pageable);
     }
 
     /**
