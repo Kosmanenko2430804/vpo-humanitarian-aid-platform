@@ -27,24 +27,24 @@
         <div class="collapse navbar-collapse" id="navbarMain">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="/announcements"
+                    <a class="nav-link fw-semibold text-white" href="/announcements"
                        th:classappend="${requestURI != null && requestURI.startsWith('/announcements')} ? 'active'">
                         <i class="bi bi-megaphone me-1"></i>Оголошення
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/catalog/providers"
+                    <a class="nav-link fw-semibold text-white" href="/catalog/providers"
                        th:classappend="${requestURI != null && requestURI.startsWith('/catalog')} ? 'active'">
-                        <i class="bi bi-people me-1"></i>Надавачі
+                        <i class="bi bi-people me-1"></i>Волонтери та організації
                     </a>
                 </li>
             </ul>
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item" sec:authorize="!isAuthenticated()">
-                    <a class="nav-link" href="/auth/login"><i class="bi bi-box-arrow-in-right me-1"></i>Увійти</a>
+                    <a class="btn btn-outline-light btn-sm ms-2" href="/auth/login"><i class="bi bi-box-arrow-in-right me-1"></i>Увійти</a>
                 </li>
                 <li class="nav-item" sec:authorize="!isAuthenticated()">
-                    <a class="btn btn-warning btn-sm ms-2" href="/auth/register">Реєстрація</a>
+                    <a class="btn btn-light btn-sm ms-2" href="/auth/register">Реєстрація</a>
                 </li>
                 <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
                     <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
@@ -103,30 +103,37 @@
 <footer class="bg-dark text-white mt-5 py-5">
     <div class="container">
         <div class="row g-4 mb-4">
+            <!-- Колонка 1 — Платформа -->
             <div class="col-md-4">
-                <div class="footer-heading">Про платформу</div>
-                <p class="text-muted small">Онлайн-ресурс для координації гуманітарної допомоги внутрішньо переміщеним особам України.</p>
-            </div>
-            <div class="col-md-4">
-                <div class="footer-heading">Навігація</div>
-                <ul class="list-unstyled mb-0">
-                    <li class="mb-1"><a href="/announcements"><i class="bi bi-megaphone me-1"></i>Оголошення</a></li>
-                    <li class="mb-1"><a href="/catalog/providers"><i class="bi bi-people me-1"></i>Каталог надавачів</a></li>
-                    <li class="mb-1"><a href="/auth/register"><i class="bi bi-person-plus me-1"></i>Реєстрація</a></li>
+                <div class="footer-heading">Платформа</div>
+                <ul class="list-unstyled mb-0 small">
+                    <li class="mb-1"><a href="/auth/login" class="text-white-50 text-decoration-none">Вхід / Реєстрація</a></li>
+                    <li class="mb-1"><a href="/cabinet" class="text-white-50 text-decoration-none">Особистий кабінет</a></li>
+                    <li class="mb-1"><a href="/announcements?type=REQUEST" class="text-white-50 text-decoration-none">Оголошення про потреби</a></li>
+                    <li class="mb-1"><a href="/announcements?type=OFFER" class="text-white-50 text-decoration-none">Пропозиції допомоги</a></li>
+                    <li class="mb-1"><a href="/catalog/providers" class="text-white-50 text-decoration-none">Волонтери та організації</a></li>
                 </ul>
             </div>
+            <!-- Колонка 2 — Для ВПО -->
             <div class="col-md-4">
-                <div class="footer-heading">Кабінет</div>
-                <ul class="list-unstyled mb-0">
-                    <li class="mb-1"><a href="/cabinet"><i class="bi bi-house me-1"></i>Особистий кабінет</a></li>
-                    <li class="mb-1"><a href="/cabinet/announcements"><i class="bi bi-megaphone me-1"></i>Мої оголошення</a></li>
-                    <li class="mb-1"><a href="/cabinet/notifications"><i class="bi bi-bell me-1"></i>Сповіщення</a></li>
+                <div class="footer-heading">Для ВПО</div>
+                <ul class="list-unstyled mb-0 small">
+                    <li class="mb-1"><a href="/announcements?type=OFFER" class="text-white-50 text-decoration-none">Знайти допомогу</a></li>
+                    <li class="mb-1"><a href="/announcements/new" class="text-white-50 text-decoration-none">Подати заявку</a></li>
+                </ul>
+            </div>
+            <!-- Колонка 3 — Для волонтерів та організацій -->
+            <div class="col-md-4">
+                <div class="footer-heading">Для волонтерів та організацій</div>
+                <ul class="list-unstyled mb-0 small">
+                    <li class="mb-1"><a href="/announcements/new" class="text-white-50 text-decoration-none">Опублікувати пропозицію допомоги</a></li>
+                    <li class="mb-1"><a href="/announcements?type=REQUEST" class="text-white-50 text-decoration-none">Переглянути заявки</a></li>
                 </ul>
             </div>
         </div>
         <hr class="border-secondary">
         <div class="text-center">
-            <small class="text-muted"><i class="bi bi-heart-fill text-danger me-1"></i>Разом ми сильніші &mdash; допомагаємо тим, хто цього потребує</small>
+            <small class="text-white-50"><i class="bi bi-heart-fill text-danger me-1"></i>Разом ми сильніші &mdash; допомагаємо тим, хто цього потребує</small>
         </div>
     </div>
 </footer>
