@@ -59,10 +59,10 @@ public class SecurityConfig {
         http
             .authenticationProvider(authenticationProvider())
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/announcements/new", "/announcements/*/edit").authenticated()
                 .requestMatchers("/", "/announcements", "/announcements/**", "/catalog/**",
                         "/auth/**", "/css/**", "/js/**", "/images/**", "/payment/**",
                         "/error", "/fragments/**").permitAll()
-                .requestMatchers("/announcements/new", "/announcements/*/edit").authenticated()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/cabinet/**", "/applications/**", "/complaints/**").authenticated()
                 .anyRequest().authenticated()
