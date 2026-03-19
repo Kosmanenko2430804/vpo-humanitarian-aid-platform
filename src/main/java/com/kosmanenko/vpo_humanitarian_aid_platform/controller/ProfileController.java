@@ -32,12 +32,8 @@ public class ProfileController {
     private final CategoryRepository categoryRepository;
 
     @GetMapping
-    public String cabinet(@AuthenticationPrincipal UserDetails userDetails, Model model) {
-        User user = userService.findByEmail(userDetails.getUsername()).orElseThrow();
-        model.addAttribute("user", user);
-        model.addAttribute("announcements", announcementService.findByAuthor(user));
-        model.addAttribute("unreadCount", notificationService.countUnread(user));
-        return "cabinet/index";
+    public String cabinet() {
+        return "redirect:/cabinet/announcements";
     }
 
     @GetMapping("/profile")
@@ -45,6 +41,7 @@ public class ProfileController {
         User user = userService.findByEmail(userDetails.getUsername()).orElseThrow();
         model.addAttribute("user", user);
         model.addAttribute("allCategories", categoryRepository.findAll());
+        model.addAttribute("unreadCount", notificationService.countUnread(user));
         return "cabinet/profile";
     }
 
@@ -86,6 +83,7 @@ public class ProfileController {
         User user = userService.findByEmail(userDetails.getUsername()).orElseThrow();
         model.addAttribute("user", user);
         model.addAttribute("announcements", announcementService.findByAuthor(user));
+        model.addAttribute("unreadCount", notificationService.countUnread(user));
         return "cabinet/my-announcements";
     }
 
@@ -93,6 +91,7 @@ public class ProfileController {
     public String myApplications(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         User user = userService.findByEmail(userDetails.getUsername()).orElseThrow();
         model.addAttribute("user", user);
+        model.addAttribute("unreadCount", notificationService.countUnread(user));
 
         // For VPO: show their submitted applications
         model.addAttribute("myApplications", helpApplicationService.findByApplicant(user));
@@ -113,6 +112,7 @@ public class ProfileController {
         notificationService.markAllRead(user);
         model.addAttribute("user", user);
         model.addAttribute("notifications", notificationService.getNotificationsForUser(user));
+        model.addAttribute("unreadCount", 0L);
         return "cabinet/notifications";
     }
 

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="uk">
+<body>
+<div th:fragment="sidebar" class="col-md-3">
+    <div class="card shadow-sm mb-4">
+        <div class="card-body text-center p-4">
+            <h6 class="fw-bold mt-2" th:text="${user.fullName}"></h6>
+            <p class="text-muted small mb-1" th:text="${user.email}"></p>
+            <span th:class="${user.role.name() == 'VPO'} ? 'badge bg-warning text-dark' :
+                           (${user.role.name() == 'PROVIDER'} ? 'badge bg-success' : 'badge bg-danger')"
+                  th:text="${user.role.name() == 'VPO'} ? 'ВПО' :
+                           (${user.role.name() == 'PROVIDER'} ? 'Надавач' : 'Адміністратор')"></span>
+        </div>
+        <ul class="list-group list-group-flush sidebar-nav">
+            <li th:classappend="${requestURI == '/cabinet/announcements'} ? 'active-item'" class="list-group-item">
+                <a href="/cabinet/announcements" class="text-decoration-none text-dark">
+                    <i class="bi bi-megaphone me-2"></i>Мої оголошення
+                </a>
+            </li>
+            <li th:classappend="${requestURI == '/cabinet/applications'} ? 'active-item'" class="list-group-item">
+                <a href="/cabinet/applications" class="text-decoration-none text-dark">
+                    <i class="bi bi-file-text me-2"></i>Заявки
+                </a>
+            </li>
+            <li th:classappend="${requestURI == '/cabinet/notifications'} ? 'active-item'" class="list-group-item">
+                <a href="/cabinet/notifications" class="text-decoration-none text-dark">
+                    <i class="bi bi-bell me-2"></i>Сповіщення
+                    <span th:if="${unreadCount > 0}" class="badge bg-danger rounded-pill"
+                          th:text="${unreadCount}"></span>
+                </a>
+            </li>
+            <li th:classappend="${requestURI == '/cabinet/profile'} ? 'active-item'" class="list-group-item">
+                <a href="/cabinet/profile" class="text-decoration-none text-dark">
+                    <i class="bi bi-gear me-2"></i>Профіль
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>

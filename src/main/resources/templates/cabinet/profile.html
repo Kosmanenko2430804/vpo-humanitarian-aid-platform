@@ -9,8 +9,10 @@
 <body>
 <main>
 <div class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
+    <div class="row">
+        <div th:replace="~{cabinet/sidebar :: sidebar}"></div>
+
+        <div class="col-md-9">
             <div class="card shadow">
                 <div class="card-body p-4">
                     <h3 class="fw-bold mb-4"><i class="bi bi-gear me-2"></i>Редагувати профіль</h3>
@@ -27,15 +29,11 @@
                                 <input type="tel" name="phone" class="form-control" th:value="${user.phone}">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Місто</label>
+                                <label class="form-label">Населений пункт</label>
                                 <input type="text" name="city" class="form-control" th:value="${user.city}">
                             </div>
 
                             <!-- Organization fields -->
-                            <div th:if="${user.role.name() == 'PROVIDER'}" class="col-12">
-                                <hr>
-                                <h5>Налаштування надавача</h5>
-                            </div>
                             <div th:if="${user.providerType != null && user.providerType.name() == 'ORGANIZATION'}" class="col-md-6">
                                 <label class="form-label">Назва організації</label>
                                 <input type="text" name="orgName" class="form-control" th:value="${user.orgName}">
@@ -45,17 +43,13 @@
                                 <textarea name="orgDescription" class="form-control" rows="3"
                                           th:text="${user.orgDescription}" placeholder="Розкажіть про свою організацію..."></textarea>
                             </div>
-                            <div th:if="${user.providerType != null && user.providerType.name() == 'ORGANIZATION'}" class="col-12">
-                                <label class="form-label">URL логотипу</label>
-                                <input type="url" name="orgLogoUrl" class="form-control" th:value="${user.orgLogoUrl}">
-                            </div>
 
                             <div th:if="${user.role.name() == 'PROVIDER'}" class="col-12">
                                 <div class="form-check">
                                     <input type="checkbox" class="form-check-input" name="isProfilePublic"
                                            id="isPublic" th:checked="${user.isProfilePublic}">
                                     <label class="form-check-label" for="isPublic">
-                                        Показувати профіль у каталозі надавачів
+                                        Показувати профіль в розділі "Волонтери та організації"
                                     </label>
                                 </div>
                             </div>
