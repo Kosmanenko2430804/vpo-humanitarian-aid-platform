@@ -49,7 +49,7 @@
 
                         <!-- Provider type (shown only for PROVIDER) -->
                         <div id="providerTypeSection" class="mb-4 d-none">
-                            <label class="form-label fw-bold">Тип надавача:</label>
+                            <label class="form-label fw-bold">Тип акаунту:</label>
                             <div class="row g-2">
                                 <div class="col-6">
                                     <input type="radio" class="btn-check" name="providerType" id="typeVolunteer" value="VOLUNTEER">
@@ -69,12 +69,12 @@
                         <!-- Org name (shown only for ORGANIZATION) -->
                         <div id="orgSection" class="mb-3 d-none">
                             <label class="form-label">Назва організації</label>
-                            <input type="text" name="orgName" class="form-control" placeholder="Благодійний фонд...">
+                            <input type="text" name="orgName" id="orgName" class="form-control" placeholder="Благодійний фонд...">
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Повне ім'я</label>
-                            <input type="text" th:field="*{fullName}" class="form-control" required placeholder="Іван Іваненко"
+                            <label class="form-label">ПІБ</label>
+                            <input type="text" th:field="*{fullName}" class="form-control" required placeholder=""
                                    th:classappend="${#fields.hasErrors('fullName')} ? 'is-invalid'">
                             <div class="invalid-feedback" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></div>
                         </div>
@@ -93,11 +93,11 @@
                         <div class="row g-2 mb-3">
                             <div class="col-6">
                                 <label class="form-label">Телефон</label>
-                                <input type="tel" name="phone" class="form-control" placeholder="+380...">
+                                <input type="tel" name="phone" class="form-control" placeholder="+380..." required>
                             </div>
                             <div class="col-6">
-                                <label class="form-label">Місто</label>
-                                <input type="text" name="city" class="form-control" placeholder="Київ">
+                                <label class="form-label" id="cityLabel">Населений пункт</label>
+                                <input type="text" name="city" class="form-control" placeholder="Київ" required>
                             </div>
                         </div>
 
@@ -119,21 +119,28 @@
 document.querySelectorAll('input[name="role"]').forEach(radio => {
     radio.addEventListener('change', function() {
         const providerSection = document.getElementById('providerTypeSection');
+        const providerTypeInputs = document.querySelectorAll('input[name="providerType"]');
         if (this.value === 'PROVIDER') {
             providerSection.classList.remove('d-none');
+            providerTypeInputs.forEach(r => r.required = true);
         } else {
             providerSection.classList.add('d-none');
+            providerTypeInputs.forEach(r => r.required = false);
             document.getElementById('orgSection').classList.add('d-none');
+            document.getElementById('orgName').required = false;
         }
     });
 });
 document.querySelectorAll('input[name="providerType"]').forEach(radio => {
     radio.addEventListener('change', function() {
         const orgSection = document.getElementById('orgSection');
+        const orgName = document.getElementById('orgName');
         if (this.value === 'ORGANIZATION') {
             orgSection.classList.remove('d-none');
+            orgName.required = true;
         } else {
             orgSection.classList.add('d-none');
+            orgName.required = false;
         }
     });
 });

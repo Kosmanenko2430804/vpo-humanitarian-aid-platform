@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class RegisterForm {
 
-    @NotBlank(message = "Ім'я не може бути порожнім")
+    @NotBlank(message = "ПІБ не може бути порожнім")
     private String fullName;
 
     @NotBlank(message = "Email не може бути порожнім")

@@ -4,9 +4,15 @@ import com.kosmanenko.vpo_humanitarian_aid_platform.dto.RegisterForm;
 import com.kosmanenko.vpo_humanitarian_aid_platform.enums.ProviderType;
 import com.kosmanenko.vpo_humanitarian_aid_platform.enums.UserRole;
 import com.kosmanenko.vpo_humanitarian_aid_platform.service.AuthService;
+import com.kosmanenko.vpo_humanitarian_aid_platform.service.CustomUserDetailsService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,6 +25,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class AuthController {
 
     private final AuthService authService;
+    private final CustomUserDetailsService userDetailsService;
 
     @GetMapping("/login")
     public String loginPage(@RequestParam(required = false) String error,
@@ -79,7 +86,10 @@ public class AuthController {
     public String saveOAuth2User(
             @RequestParam String role,
             @RequestParam(required = false) String providerType,
+            @RequestParam(required = false) String phone,
+            @RequestParam(required = false) String city,
             HttpSession session,
+            HttpServletRequest request,
             RedirectAttributes redirectAttributes) {
 
         String email = (String) session.getAttribute("oauth_email");
@@ -95,11 +105,21 @@ public class AuthController {
             UserRole userRole = UserRole.valueOf(role);
             ProviderType pType = (providerType != null && !providerType.isBlank())
                 ? ProviderType.valueOf(providerType) : null;
-            authService.registerOAuth(email, name, oauthProvider, oauthId, userRole, pType);
+            authService.registerOAuth(email, name, oauthProvider, oauthId, userRole, pType, phone, city);
             session.removeAttribute("oauth_email");
             session.removeAttribute("oauth_name");
             session.removeAttribute("oauth_id");
             session.removeAttribute("oauth_provider");
+
+            // Re-authenticate as UserDetails so @AuthenticationPrincipal works in controllers
+            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+            UsernamePasswordAuthenticationToken auth =
+                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(auth);
+            request.getSession().setAttribute(
+                HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+                SecurityContextHolder.getContext());
+
             redirectAttributes.addFlashAttribute("success", "Реєстрацію завершено!");
             return "redirect:/";
         } catch (Exception e) {

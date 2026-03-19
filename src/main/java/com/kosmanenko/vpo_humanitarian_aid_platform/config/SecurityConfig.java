@@ -62,7 +62,7 @@ public class SecurityConfig {
                 .requestMatchers("/announcements/new", "/announcements/*/edit").authenticated()
                 .requestMatchers("/", "/announcements", "/announcements/**", "/catalog/**",
                         "/auth/**", "/css/**", "/js/**", "/images/**", "/payment/**",
-                        "/error", "/fragments/**").permitAll()
+                        "/error", "/fragments/**", "/oauth2/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/cabinet/**", "/applications/**", "/complaints/**").authenticated()
                 .anyRequest().authenticated()
