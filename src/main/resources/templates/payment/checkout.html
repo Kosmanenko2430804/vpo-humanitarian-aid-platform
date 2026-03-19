@@ -7,20 +7,13 @@
 </head>
 <body>
 <main>
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-5 text-center">
-            <h4 class="fw-bold mb-4">Оплата через LiqPay</h4>
-            <p class="text-muted mb-4">Натисніть кнопку нижче для переходу до безпечної оплати</p>
-            <form method="POST" action="https://www.liqpay.ua/api/3/checkout" accept-charset="utf-8">
-                <input type="hidden" name="data" th:value="${data}">
-                <input type="hidden" name="signature" th:value="${signature}">
-                <button type="submit" class="btn btn-warning btn-lg">
-                    <i class="bi bi-credit-card me-2"></i>Оплатити
-                </button>
-            </form>
-        </div>
-    </div>
+<div class="container py-5 text-center">
+    <p class="text-muted">Перенаправлення до сторінки оплати...</p>
+    <form id="liqpayForm" method="POST" action="https://www.liqpay.ua/api/3/checkout" accept-charset="utf-8">
+        <input type="hidden" name="data" th:value="${data}">
+        <input type="hidden" name="signature" th:value="${signature}">
+    </form>
+    <script>document.getElementById('liqpayForm').submit();</script>
 </div>
 </main>
 </body>
