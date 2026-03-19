@@ -17,9 +17,6 @@
                     </h3>
                     <div th:if="${error}" class="alert alert-danger">
                         <span th:text="${error}"></span>
-                        <span th:if="${error != null && #strings.contains(error, 'вже існує')}">
-                            &nbsp;<a href="/auth/login" class="alert-link">Увійдіть</a>
-                        </span>
                     </div>
 
                     <form th:action="@{/auth/register}" method="post" id="registerForm"
@@ -45,6 +42,8 @@
                                     </label>
                                 </div>
                             </div>
+                            <div th:if="${#fields.hasErrors('role')}" class="text-danger small mt-1"
+                                 th:errors="*{role}"></div>
                         </div>
 
                         <!-- Provider type (shown only for PROVIDER) -->
@@ -74,30 +73,35 @@
 
                         <div class="mb-3">
                             <label class="form-label">ПІБ</label>
-                            <input type="text" th:field="*{fullName}" class="form-control" required placeholder=""
+                            <input type="text" th:field="*{fullName}" class="form-control" placeholder="Іваненко Іван Іванович"
+                                   maxlength="255"
                                    th:classappend="${#fields.hasErrors('fullName')} ? 'is-invalid'">
                             <div class="invalid-feedback" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></div>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Email</label>
-                            <input type="email" th:field="*{email}" class="form-control" required placeholder="your@email.com"
+                            <input type="email" th:field="*{email}" class="form-control" placeholder="your@email.com"
                                    th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'">
                             <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Пароль</label>
-                            <input type="password" th:field="*{password}" class="form-control" required minlength="6" placeholder="Мінімум 6 символів"
+                            <input type="password" th:field="*{password}" class="form-control" minlength="8" placeholder="Мінімум 8 символів"
                                    th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'">
                             <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
                         </div>
                         <div class="row g-2 mb-3">
                             <div class="col-6">
                                 <label class="form-label">Телефон</label>
-                                <input type="tel" name="phone" class="form-control" placeholder="+380..." required>
+                                <input type="tel" th:field="*{phone}" class="form-control" placeholder="+380501234567"
+                                       th:classappend="${#fields.hasErrors('phone')} ? 'is-invalid'">
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
                             </div>
                             <div class="col-6">
                                 <label class="form-label" id="cityLabel">Населений пункт</label>
-                                <input type="text" name="city" class="form-control" placeholder="Київ" required>
+                                <input type="text" th:field="*{city}" class="form-control" placeholder="Київ"
+                                       th:classappend="${#fields.hasErrors('city')} ? 'is-invalid'">
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('city')}" th:errors="*{city}"></div>
                             </div>
                         </div>
 
