@@ -80,6 +80,10 @@ public class AnnouncementService {
         return announcementRepository.findByStatusOrderByCreatedAtDesc(AnnouncementStatus.PENDING);
     }
 
+    public List<Announcement> findReviewed() {
+        return announcementRepository.findByStatusNotOrderByCreatedAtDesc(AnnouncementStatus.PENDING);
+    }
+
     /**
      * Повертає 6 найновіших опублікованих оголошень типу OFFER (пропозиція допомоги).
      *
