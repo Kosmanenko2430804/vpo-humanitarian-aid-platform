@@ -1,5 +1,6 @@
 package com.kosmanenko.vpo_humanitarian_aid_platform.controller;
 
+import com.kosmanenko.vpo_humanitarian_aid_platform.service.AnnouncementArchivingScheduler;
 import com.kosmanenko.vpo_humanitarian_aid_platform.service.AnnouncementService;
 import com.kosmanenko.vpo_humanitarian_aid_platform.service.ComplaintService;
 import com.kosmanenko.vpo_humanitarian_aid_platform.service.ModerationService;
@@ -24,6 +25,7 @@ public class AdminController {
     private final ModerationService moderationService;
     private final ComplaintService complaintService;
     private final UserService userService;
+    private final AnnouncementArchivingScheduler archivingScheduler;
 
     @GetMapping
     public String dashboard(Model model) {
@@ -101,6 +103,13 @@ public class AdminController {
     public String toggleBlock(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         userService.toggleBlock(id);
         redirectAttributes.addFlashAttribute("success", "Статус користувача змінено");
+        return "redirect:/admin/users";
+    }
+
+    @PostMapping("/run-archiving")
+    public String runArchiving(RedirectAttributes redirectAttributes) {
+        archivingScheduler.archiveOldAnnouncements();
+        redirectAttributes.addFlashAttribute("success", "Архівацію запущено вручну");
         return "redirect:/admin/users";
     }
 }
