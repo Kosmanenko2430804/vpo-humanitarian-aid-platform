@@ -40,6 +40,11 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         if (existingUser.isPresent()) {
             User user = existingUser.get();
             if (Boolean.TRUE.equals(user.getIsBlocked())) {
+                SecurityContextHolder.clearContext();
+                HttpSession session = request.getSession(false);
+                if (session != null) {
+                    session.invalidate();
+                }
                 response.sendRedirect("/auth/login?blocked=true");
                 return;
             }
