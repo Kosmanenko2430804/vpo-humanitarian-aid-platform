@@ -54,7 +54,8 @@ public class AuthController {
         }
 
         if (authService.emailExists(form.getEmail())) {
-            model.addAttribute("error", "Користувач з таким email вже існує");
+            bindingResult.rejectValue("email", "email.exists",
+                "Акаунт з таким email вже існує. Увійдіть або відновіть пароль");
             return "auth/register";
         }
 
