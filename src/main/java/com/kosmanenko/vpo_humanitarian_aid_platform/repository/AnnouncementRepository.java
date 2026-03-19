@@ -23,4 +23,6 @@ public interface AnnouncementRepository extends JpaRepository<Announcement, Long
     List<Announcement> findTop6ByStatusAndTypeOrderByCreatedAtDesc(AnnouncementStatus status, AnnouncementType type);
 
     List<Announcement> findByAuthorAndStatus(User author, AnnouncementStatus status);
+
+    List<Announcement> findByStatusNotOrderByCreatedAtDesc(AnnouncementStatus status);
 }

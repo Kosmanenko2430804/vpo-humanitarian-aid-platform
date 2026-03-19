@@ -85,6 +85,12 @@ public class AdminController {
         return "redirect:/admin/complaints";
     }
 
+    @GetMapping("/history")
+    public String history(Model model) {
+        model.addAttribute("announcements", announcementService.findReviewed());
+        return "admin/history";
+    }
+
     @GetMapping("/users")
     public String users(Model model) {
         model.addAttribute("users", userService.findAll());

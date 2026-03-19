@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::title}, ~{::main})}"
+      lang="uk">
+<head>
+    <title>Історія розглянутих оголошень &mdash; Адмін</title>
+</head>
+<body>
+<main>
+<div class="container py-4">
+    <h3 class="fw-bold mb-4"><i class="bi bi-clock-history me-2 text-secondary"></i>Історія розглянутих оголошень</h3>
+
+    <div th:if="${#lists.isEmpty(announcements)}" class="text-center py-5">
+        <i class="bi bi-inbox fs-1 text-muted"></i>
+        <p class="text-muted mt-2">Немає розглянутих оголошень</p>
+    </div>
+
+    <div class="row g-3" th:unless="${#lists.isEmpty(announcements)}">
+        <div th:each="a : ${announcements}" class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="fw-bold mb-1" th:text="${a.title}"></h6>
+                            <div class="d-flex gap-2 flex-wrap mb-1">
+                                <span th:class="${a.type.name() == 'OFFER'} ? 'badge bg-success' : 'badge bg-warning text-dark'"
+                                      th:text="${a.type.name() == 'OFFER'} ? 'Пропозиція' : 'Запит'"></span>
+                                <span th:switch="${a.status.name()}">
+                                    <span th:case="'PUBLISHED'" class="badge bg-success">Опубліковано</span>
+                                    <span th:case="'REJECTED'" class="badge bg-danger">Відхилено</span>
+                                    <span th:case="'ARCHIVED'" class="badge bg-warning text-dark">Архів</span>
+                                    <span th:case="'COMPLETED'" class="badge bg-info">Завершено</span>
+                                </span>
+                                <small class="text-muted" th:text="${a.city}"></small>
+                                <small class="text-muted">Автор: <span th:text="${a.author.fullName}"></span></small>
+                            </div>
+                            <small class="text-muted" th:if="${a.rejectionReason != null}">
+                                Причина відхилення: <span th:text="${a.rejectionReason}"></span>
+                            </small>
+                            <small class="text-muted d-block">
+                                Створено: <span th:text="${#temporals.format(a.createdAt, 'dd.MM.yyyy HH:mm')}"></span>
+                                <span th:if="${a.publishedAt != null}">
+                                    &nbsp;| Опубліковано: <span th:text="${#temporals.format(a.publishedAt, 'dd.MM.yyyy HH:mm')}"></span>
+                                </span>
+                            </small>
+                        </div>
+                        <a th:href="@{/announcements/{id}(id=${a.id})}" class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</main>
+</body>
+</html>
