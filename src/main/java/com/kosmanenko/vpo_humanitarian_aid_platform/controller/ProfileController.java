@@ -47,8 +47,8 @@ public class ProfileController {
 
     @PostMapping("/profile")
     public String saveProfile(@RequestParam String fullName,
-                              @RequestParam(required = false) String phone,
-                              @RequestParam(required = false) String city,
+                              @RequestParam String phone,
+                              @RequestParam String city,
                               @RequestParam(required = false) String orgName,
                               @RequestParam(required = false) String orgDescription,
                               @RequestParam(required = false) String orgLogoUrl,
