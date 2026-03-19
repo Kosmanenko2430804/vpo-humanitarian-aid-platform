@@ -48,6 +48,11 @@ public class ApplicationController {
                          @RequestParam(required = false) String providerPhone,
                          @AuthenticationPrincipal UserDetails userDetails,
                          RedirectAttributes redirectAttributes) {
+        if (pickupDate == null || pickupLocation == null || pickupLocation.isBlank()
+                || providerPhone == null || providerPhone.isBlank()) {
+            redirectAttributes.addFlashAttribute("error", "Вкажіть дату, місце та телефон для видачі допомоги");
+            return "redirect:/cabinet/applications";
+        }
         User user = userService.findByEmail(userDetails.getUsername()).orElseThrow();
         try {
             helpApplicationService.accept(id, pickupDate, pickupLocation, providerPhone, user);
