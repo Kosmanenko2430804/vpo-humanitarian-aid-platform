@@ -60,7 +60,11 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
             response.sendRedirect("/");
         } else {
             // New OAuth user - need to choose role
+            // Clear security context so the user is not considered authenticated
+            // until they complete registration
+            SecurityContextHolder.clearContext();
             HttpSession session = request.getSession();
+            session.removeAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
             session.setAttribute("oauth_email", email);
             session.setAttribute("oauth_name", name);
             session.setAttribute("oauth_id", oauthId);

@@ -90,7 +90,8 @@ public class AuthService {
     @Transactional
     public User registerOAuth(String email, String fullName,
                               String oauthProvider, String oauthId,
-                              UserRole role, ProviderType providerType) {
+                              UserRole role, ProviderType providerType,
+                              String phone, String city) {
         User user = User.builder()
             .email(email)
             .fullName(fullName)
@@ -98,6 +99,8 @@ public class AuthService {
             .oauthId(oauthId)
             .role(role)
             .providerType(role == UserRole.PROVIDER ? providerType : null)
+            .phone(phone)
+            .city(city)
             .isBlocked(false)
             .isProfilePublic(false)
             .ratingCount(0)

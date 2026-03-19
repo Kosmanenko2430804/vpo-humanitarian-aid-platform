@@ -54,6 +54,14 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="mb-3">
+                            <label class="form-label">Контактний номер телефону</label>
+                            <input type="tel" name="phone" class="form-control" placeholder="+380..." required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Населений пункт</label>
+                            <input type="text" name="city" class="form-control" required>
+                        </div>
                         <button type="submit" class="btn btn-primary w-100">
                             <i class="bi bi-check2 me-2"></i>Завершити реєстрацію
                         </button>
@@ -66,7 +74,15 @@
 <script>
 document.querySelectorAll('input[name="role"]').forEach(r => {
     r.addEventListener('change', function() {
-        document.getElementById('providerTypeSection').classList.toggle('d-none', this.value !== 'PROVIDER');
+        const providerSection = document.getElementById('providerTypeSection');
+        const providerTypeInputs = document.querySelectorAll('input[name="providerType"]');
+        if (this.value === 'PROVIDER') {
+            providerSection.classList.remove('d-none');
+            providerTypeInputs.forEach(r => r.required = true);
+        } else {
+            providerSection.classList.add('d-none');
+            providerTypeInputs.forEach(r => r.required = false);
+        }
     });
 });
 </script>
