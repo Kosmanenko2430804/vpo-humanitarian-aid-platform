@@ -52,9 +52,10 @@
                         <span sec:authentication="name">Користувач</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="/cabinet"><i class="bi bi-house me-2"></i>Кабінет</a></li>
-                        <li><a class="dropdown-item" href="/cabinet/profile"><i class="bi bi-gear me-2"></i>Профіль</a></li>
-                        <li>
+                        <!-- Звичайні користувачі -->
+                        <li sec:authorize="!hasRole('ADMIN')"><a class="dropdown-item" href="/cabinet/announcements"><i class="bi bi-megaphone me-2"></i>Мої оголошення</a></li>
+                        <li sec:authorize="!hasRole('ADMIN')"><a class="dropdown-item" href="/cabinet/applications"><i class="bi bi-file-text me-2"></i>Заявки</a></li>
+                        <li sec:authorize="!hasRole('ADMIN')">
                             <a class="dropdown-item" href="/cabinet/notifications">
                                 <i class="bi bi-bell me-2"></i>Сповіщення
                                 <span id="notif-badge"
@@ -64,8 +65,12 @@
                                       hx-swap="outerHTML"></span>
                             </a>
                         </li>
-                        <li sec:authorize="hasRole('ADMIN')"><hr class="dropdown-divider"></li>
-                        <li sec:authorize="hasRole('ADMIN')"><a class="dropdown-item" href="/admin"><i class="bi bi-shield-check me-2"></i>Адмін-панель</a></li>
+                        <li sec:authorize="!hasRole('ADMIN')"><a class="dropdown-item" href="/cabinet/profile"><i class="bi bi-gear me-2"></i>Профіль</a></li>
+                        <!-- Адміністратор -->
+                        <li sec:authorize="hasRole('ADMIN')"><a class="dropdown-item" href="/admin/moderation"><i class="bi bi-check2-square me-2"></i>Оголошення на модерації</a></li>
+                        <li sec:authorize="hasRole('ADMIN')"><a class="dropdown-item" href="/admin/complaints"><i class="bi bi-flag me-2"></i>Нові скарги</a></li>
+                        <li sec:authorize="hasRole('ADMIN')"><a class="dropdown-item" href="/admin/users"><i class="bi bi-people me-2"></i>Управління користувачами</a></li>
+                        <li sec:authorize="hasRole('ADMIN')"><a class="dropdown-item" href="/admin/history"><i class="bi bi-clock-history me-2"></i>Історія оголошень</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
                             <form th:action="@{/auth/logout}" method="post">
@@ -108,7 +113,6 @@
                 <div class="footer-heading">Платформа</div>
                 <ul class="list-unstyled mb-0 small">
                     <li class="mb-1"><a href="/auth/login" class="text-white-50 text-decoration-none">Вхід / Реєстрація</a></li>
-                    <li class="mb-1"><a href="/cabinet" class="text-white-50 text-decoration-none">Особистий кабінет</a></li>
                     <li class="mb-1"><a href="/announcements?type=REQUEST" class="text-white-50 text-decoration-none">Оголошення про потреби</a></li>
                     <li class="mb-1"><a href="/announcements?type=OFFER" class="text-white-50 text-decoration-none">Пропозиції допомоги</a></li>
                     <li class="mb-1"><a href="/catalog/providers" class="text-white-50 text-decoration-none">Волонтери та організації</a></li>

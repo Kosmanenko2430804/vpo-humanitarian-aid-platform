@@ -12,9 +12,6 @@
         <div class="col-md-4">
             <div class="card shadow-sm mb-4">
                 <div class="card-body text-center p-4">
-                    <img th:if="${provider.orgLogoUrl != null}" th:src="${provider.orgLogoUrl}"
-                         class="rounded-circle mb-3" style="width:100px;height:100px;object-fit:cover;" alt="">
-                    <i th:unless="${provider.orgLogoUrl != null}" class="bi bi-person-circle fs-1 text-muted d-block mb-3"></i>
                     <h4 class="fw-bold" th:text="${provider.orgName != null ? provider.orgName : provider.fullName}"></h4>
                     <span th:class="${provider.providerType != null && provider.providerType.name() == 'ORGANIZATION'} ? 'badge bg-primary' : 'badge bg-secondary'"
                           th:text="${provider.providerType != null && provider.providerType.name() == 'ORGANIZATION'} ? 'Організація' : 'Волонтер'"></span>
