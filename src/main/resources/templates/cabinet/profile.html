@@ -25,22 +25,22 @@
                                        th:value="${user.fullName}">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Телефон</label>
-                                <input type="tel" name="phone" class="form-control" th:value="${user.phone}">
+                                <label class="form-label fw-bold">Телефон *</label>
+                                <input type="tel" name="phone" class="form-control" required th:value="${user.phone}">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Населений пункт</label>
-                                <input type="text" name="city" class="form-control" th:value="${user.city}">
+                                <label class="form-label fw-bold">Населений пункт *</label>
+                                <input type="text" name="city" class="form-control" required th:value="${user.city}">
                             </div>
 
                             <!-- Organization fields -->
                             <div th:if="${user.providerType != null && user.providerType.name() == 'ORGANIZATION'}" class="col-md-6">
-                                <label class="form-label">Назва організації</label>
-                                <input type="text" name="orgName" class="form-control" th:value="${user.orgName}">
+                                <label class="form-label fw-bold">Назва організації *</label>
+                                <input type="text" name="orgName" class="form-control" required th:value="${user.orgName}">
                             </div>
                             <div th:if="${user.providerType != null && user.providerType.name() == 'ORGANIZATION'}" class="col-12">
-                                <label class="form-label">Опис організації</label>
-                                <textarea name="orgDescription" class="form-control" rows="3"
+                                <label class="form-label fw-bold">Опис організації *</label>
+                                <textarea name="orgDescription" class="form-control" rows="3" required
                                           th:text="${user.orgDescription}" placeholder="Розкажіть про свою організацію..."></textarea>
                             </div>
 
