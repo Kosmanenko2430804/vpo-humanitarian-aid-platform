@@ -102,7 +102,7 @@ public class AnnouncementController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
-        return "redirect:/cabinet";
+        return "redirect:/cabinet/announcements";
     }
 
     @GetMapping("/{id}/edit")
@@ -141,7 +141,7 @@ public class AnnouncementController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
-        return "redirect:/cabinet";
+        return "redirect:/cabinet/announcements";
     }
 
     @PostMapping("/{id}/complete")
@@ -155,7 +155,7 @@ public class AnnouncementController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
-        return "redirect:/cabinet";
+        return "redirect:/cabinet/announcements";
     }
 
     @PostMapping("/{id}/republish")
@@ -169,7 +169,7 @@ public class AnnouncementController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
-        return "redirect:/cabinet";
+        return "redirect:/cabinet/announcements";
     }
 
     @PostMapping("/{id}/complaint")
