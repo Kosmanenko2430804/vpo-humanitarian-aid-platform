@@ -10,6 +10,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -27,11 +29,19 @@ public class AdminController {
     private final UserService userService;
     private final AnnouncementArchivingScheduler archivingScheduler;
 
-    @GetMapping
-    public String dashboard(Model model) {
+    @ModelAttribute
+    public void populateSidebar(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        if (userDetails != null) {
+            userService.findByEmail(userDetails.getUsername())
+                    .ifPresent(u -> model.addAttribute("user", u));
+        }
         model.addAttribute("pendingCount", announcementService.findPending().size());
         model.addAttribute("complaintsCount", complaintService.findPending().size());
-        return "admin/dashboard";
+    }
+
+    @GetMapping
+    public String dashboard() {
+        return "redirect:/admin/moderation";
     }
 
     @GetMapping("/moderation")
@@ -85,12 +95,6 @@ public class AdminController {
         moderationService.dismissComplaint(id);
         redirectAttributes.addFlashAttribute("success", "Скаргу відхилено");
         return "redirect:/admin/complaints";
-    }
-
-    @GetMapping("/history")
-    public String history(Model model) {
-        model.addAttribute("announcements", announcementService.findReviewed());
-        return "admin/history";
     }
 
     @GetMapping("/users")
