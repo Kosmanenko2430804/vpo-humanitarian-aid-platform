@@ -12,9 +12,7 @@
         <div class="col-md-6">
             <div class="card shadow">
                 <div class="card-body p-4">
-                    <h3 class="card-title text-center mb-4 fw-bold">
-                        <i class="bi bi-person-plus me-2 text-primary"></i>Реєстрація
-                    </h3>
+                    <h3 class="card-title text-center mb-4 fw-bold">Реєстрація</h3>
                     <div th:if="${error}" class="alert alert-danger">
                         <span th:text="${error}"></span>
                     </div>
@@ -29,17 +27,11 @@
                             <div class="row g-2">
                                 <div class="col-6">
                                     <input type="radio" class="btn-check" name="role" id="roleVPO" value="VPO" required>
-                                    <label class="btn btn-outline-warning w-100 py-3" for="roleVPO">
-                                        <i class="bi bi-hand-index-thumb d-block fs-4 mb-1"></i>
-                                        Отримати допомогу
-                                    </label>
+                                    <label class="btn btn-outline-warning w-100 py-3" for="roleVPO">Отримати допомогу</label>
                                 </div>
                                 <div class="col-6">
                                     <input type="radio" class="btn-check" name="role" id="roleProvider" value="PROVIDER">
-                                    <label class="btn btn-outline-success w-100 py-3" for="roleProvider">
-                                        <i class="bi bi-gift d-block fs-4 mb-1"></i>
-                                        Надати допомогу
-                                    </label>
+                                    <label class="btn btn-outline-success w-100 py-3" for="roleProvider">Надати допомогу</label>
                                 </div>
                             </div>
                             <div th:if="${#fields.hasErrors('role')}" class="text-danger small mt-1"
@@ -52,15 +44,11 @@
                             <div class="row g-2">
                                 <div class="col-6">
                                     <input type="radio" class="btn-check" name="providerType" id="typeVolunteer" value="VOLUNTEER">
-                                    <label class="btn btn-outline-primary w-100 py-2" for="typeVolunteer">
-                                        <i class="bi bi-person-heart d-block mb-1"></i>Волонтер
-                                    </label>
+                                    <label class="btn btn-outline-primary w-100 py-2" for="typeVolunteer">Волонтер</label>
                                 </div>
                                 <div class="col-6">
                                     <input type="radio" class="btn-check" name="providerType" id="typeOrg" value="ORGANIZATION">
-                                    <label class="btn btn-outline-primary w-100 py-2" for="typeOrg">
-                                        <i class="bi bi-building d-block mb-1"></i>Організація
-                                    </label>
+                                    <label class="btn btn-outline-primary w-100 py-2" for="typeOrg">Організація</label>
                                 </div>
                             </div>
                         </div>
@@ -105,9 +93,7 @@
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-primary w-100 mb-3">
-                            <i class="bi bi-person-check me-2"></i>Зареєструватися
-                        </button>
+                        <button type="submit" class="btn btn-primary w-100 mb-3">Зареєструватися</button>
                     </form>
 
                     <p class="text-center mb-0">

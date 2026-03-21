@@ -12,10 +12,9 @@
         <div th:replace="~{cabinet/sidebar :: sidebar}"></div>
 
         <div class="col-md-9">
-            <h3 class="fw-bold mb-4"><i class="bi bi-bell me-2"></i>Сповіщення</h3>
+            <h3 class="fw-bold mb-4">Сповіщення</h3>
             <div th:if="${#lists.isEmpty(notifications)}" class="text-center py-5">
-                <i class="bi bi-bell-slash fs-1 text-muted"></i>
-                <p class="text-muted mt-2">Немає сповіщень</p>
+                <p class="text-muted">Немає сповіщень</p>
             </div>
             <div class="list-group shadow-sm" th:unless="${#lists.isEmpty(notifications)}">
                 <div th:each="n : ${notifications}"

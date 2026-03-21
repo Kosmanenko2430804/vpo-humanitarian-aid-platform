@@ -13,33 +13,25 @@
         </div>
         <ul class="list-group list-group-flush sidebar-nav">
             <li th:classappend="${requestURI == '/cabinet/announcements'} ? 'active-item'" class="list-group-item">
-                <a href="/cabinet/announcements" class="text-decoration-none text-dark">
-                    <i class="bi bi-megaphone me-2"></i>Мої оголошення
-                </a>
+                <a href="/cabinet/announcements" class="text-decoration-none text-dark">Мої оголошення</a>
             </li>
             <li th:classappend="${requestURI == '/cabinet/applications'} ? 'active-item'" class="list-group-item">
-                <a href="/cabinet/applications" class="text-decoration-none text-dark">
-                    <i class="bi bi-file-text me-2"></i>Заявки
-                </a>
+                <a href="/cabinet/applications" class="text-decoration-none text-dark">Заявки</a>
             </li>
             <li th:classappend="${requestURI == '/cabinet/notifications'} ? 'active-item'" class="list-group-item">
                 <a href="/cabinet/notifications" class="text-decoration-none text-dark">
-                    <i class="bi bi-bell me-2"></i>Сповіщення
+                    Сповіщення
                     <span th:if="${unreadCount > 0}" class="badge bg-danger rounded-pill"
                           th:text="${unreadCount}"></span>
                 </a>
             </li>
             <li th:classappend="${requestURI == '/cabinet/profile'} ? 'active-item'" class="list-group-item">
-                <a href="/cabinet/profile" class="text-decoration-none text-dark">
-                    <i class="bi bi-gear me-2"></i>Профіль
-                </a>
+                <a href="/cabinet/profile" class="text-decoration-none text-dark">Профіль</a>
             </li>
             <li class="list-group-item">
                 <form th:action="@{/auth/logout}" method="post">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                    <button type="submit" class="btn btn-link text-decoration-none text-danger p-0">
-                        <i class="bi bi-box-arrow-right me-2"></i>Вийти
-                    </button>
+                    <button type="submit" class="btn btn-link text-decoration-none text-danger p-0">Вийти</button>
                 </form>
             </li>
         </ul>

@@ -45,9 +45,9 @@
             <div th:if="${currentUser != null && currentUser.role.name() == 'VPO' && announcement.type.name() == 'OFFER' && announcement.acceptsApplications}"
                  class="card shadow-sm mb-4">
                 <div class="card-body p-4">
-                    <h5 class="fw-bold mb-3"><i class="bi bi-send me-2 text-primary"></i>Подати заявку</h5>
+                    <h5 class="fw-bold mb-3">Подати заявку</h5>
                     <div th:if="${alreadyApplied}" class="alert alert-info">
-                        <i class="bi bi-info-circle me-2"></i>Ви вже подали заявку на це оголошення
+                        Ви вже подали заявку на це оголошення
                     </div>
                     <form th:unless="${alreadyApplied}" th:action="@{/applications/apply/{id}(id=${announcement.id})}" method="post">
                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
@@ -56,9 +56,7 @@
                             <textarea name="message" class="form-control" rows="4" required
                                       placeholder="Розкажіть про свою ситуацію..."></textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-send me-2"></i>Надіслати заявку
-                        </button>
+                        <button type="submit" class="btn btn-primary">Надіслати заявку</button>
                     </form>
                 </div>
             </div>
@@ -66,16 +64,14 @@
             <!-- Donate form for REQUEST announcements -->
             <div th:if="${announcement.type.name() == 'REQUEST' && (currentUser == null || currentUser.role.name() != 'ADMIN')}" class="card shadow-sm mb-4 border-warning">
                 <div class="card-body p-4 text-center">
-                    <h5 class="fw-bold"><i class="bi bi-heart text-danger me-2"></i>Підтримати фінансово</h5>
+                    <h5 class="fw-bold">Підтримати фінансово</h5>
                     <p class="text-muted">Ви можете зробити благодійний внесок для цієї людини</p>
                     <form th:action="@{/payment/donate/{id}(id=${announcement.id})}" method="post"
                           class="d-flex justify-content-center gap-2 flex-wrap">
                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                         <input type="number" name="amount" class="form-control no-spinner" style="max-width: 160px;"
                                min="1" max="100000" step="0.01" required placeholder="Сума (грн)">
-                        <button type="submit" class="btn btn-warning">
-                            <i class="bi bi-credit-card me-2"></i>Перейти до оплати LiqPay
-                        </button>
+                        <button type="submit" class="btn btn-warning">Перейти до оплати LiqPay</button>
                     </form>
                 </div>
             </div>
@@ -85,9 +81,7 @@
                  sec:authorize="isAuthenticated()" class="card shadow-sm mb-4">
                 <div class="card-body p-3">
                     <details>
-                        <summary class="text-muted small cursor-pointer">
-                            <i class="bi bi-flag me-1"></i>Поскаржитись на оголошення
-                        </summary>
+                        <summary class="text-muted small cursor-pointer">Поскаржитись на оголошення</summary>
                         <form th:action="@{/announcements/{id}/complaint(id=${announcement.id})}" method="post" class="mt-3">
                             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                             <div class="mb-2">
