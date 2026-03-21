@@ -9,7 +9,7 @@
             <span th:class="${user.role.name() == 'VPO'} ? 'badge bg-warning text-dark' :
                            (${user.role.name() == 'PROVIDER'} ? 'badge bg-success' : 'badge bg-danger')"
                   th:text="${user.role.name() == 'VPO'} ? 'ВПО' :
-                           (${user.role.name() == 'PROVIDER'} ? 'Надавач' : 'Адміністратор')"></span>
+                           (${user.role.name() == 'PROVIDER'} ? (${user.providerType != null && user.providerType.name() == 'ORGANIZATION'} ? 'Організація' : 'Волонтер') : 'Адміністратор')"></span>
         </div>
         <ul class="list-group list-group-flush sidebar-nav">
             <li th:classappend="${requestURI == '/cabinet/announcements'} ? 'active-item'" class="list-group-item">
