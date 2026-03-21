@@ -84,13 +84,4 @@ public class UserService {
         });
     }
 
-    /**
-     * Зберігає оновлений рейтинг надавача.
-     * Рейтинг фактично обчислюється в {@link HelpApplicationService#leaveReview}.
-     * @param provider надавач з оновленим рейтингом
-     */
-    public void updateRating(User provider) {
-        // Рейтинг обчислюється і встановлюється у HelpApplicationService після відгуку
-        userRepository.save(provider);
-    }
 }
