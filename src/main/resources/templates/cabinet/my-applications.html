@@ -28,11 +28,9 @@
                                         <p class="text-muted small mb-1" th:text="${app.message}"></p>
                                         <div th:if="${app.status.name() == 'ACCEPTED'}" class="mt-1">
                                             <small class="text-success">
-                                                <i class="bi bi-check-circle me-1"></i>
-                                                Прийнято!
                                                 <span th:if="${app.pickupDate != null}"> Дата: <span th:text="${#temporals.format(app.pickupDate, 'dd.MM.yyyy HH:mm')}"></span></span>
-                                                <span th:if="${app.pickupLocation != null}"> | Місце: <span th:text="${app.pickupLocation}"></span></span>
-                                                <span th:if="${app.providerPhone != null}"> | Тел.: <span th:text="${app.providerPhone}"></span></span>
+                                                <span th:if="${app.pickupLocation != null and not #strings.isEmpty(app.pickupLocation)}"> | Місце: <span th:text="${app.pickupLocation}"></span></span>
+                                                <span th:if="${app.providerPhone != null and not #strings.isEmpty(app.providerPhone)}"> | Тел.: <span th:text="${app.providerPhone}"></span></span>
                                             </small>
                                         </div>
                                     </div>
