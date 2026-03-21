@@ -225,3 +225,8 @@ footer a:hover {
         border-left-color: var(--color-blue) !important;
     }
 }
+
+/* Hide number input spinners */
+.no-spinner::-webkit-outer-spin-button,
+.no-spinner::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.no-spinner { -moz-appearance: textfield; }

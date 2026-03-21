@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/payment")
@@ -16,22 +17,14 @@ public class PaymentController {
     private final PaymentService paymentService;
     private final AnnouncementService announcementService;
 
-    @GetMapping("/donate/{announcementId}")
-    public String donatePage(@PathVariable Long announcementId, Model model) {
-        Announcement announcement = announcementService.findById(announcementId).orElseThrow();
-        model.addAttribute("announcement", announcement);
-        return "payment/donate";
-    }
-
     @PostMapping("/donate/{announcementId}")
     public String processDonate(@PathVariable Long announcementId,
                                 @RequestParam double amount,
-                                Model model) {
+                                Model model,
+                                RedirectAttributes redirectAttributes) {
         if (amount < 1 || amount > 100_000) {
-            model.addAttribute("error", "Сума має бути від 1 до 100 000 грн");
-            Announcement ann = announcementService.findById(announcementId).orElseThrow();
-            model.addAttribute("announcement", ann);
-            return "payment/donate";
+            redirectAttributes.addFlashAttribute("error", "Сума має бути від 1 до 100 000 грн");
+            return "redirect:/announcements/" + announcementId;
         }
         Announcement announcement = announcementService.findById(announcementId).orElseThrow();
         String data = paymentService.generateData(announcementId, amount,
