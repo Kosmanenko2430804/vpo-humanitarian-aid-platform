@@ -46,41 +46,11 @@
                 <li class="nav-item" sec:authorize="!isAuthenticated()">
                     <a class="btn btn-light btn-sm ms-2" href="/auth/register">Реєстрація</a>
                 </li>
-                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
-                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                        <i class="bi bi-person-circle me-1"></i>
-                        <span sec:authentication="name">Користувач</span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <!-- Звичайні користувачі -->
-                        <li sec:authorize="!hasRole('ADMIN')"><a class="dropdown-item" href="/cabinet/announcements"><i class="bi bi-megaphone me-2"></i>Мої оголошення</a></li>
-                        <li sec:authorize="!hasRole('ADMIN')"><a class="dropdown-item" href="/cabinet/applications"><i class="bi bi-file-text me-2"></i>Заявки</a></li>
-                        <li sec:authorize="!hasRole('ADMIN')">
-                            <a class="dropdown-item" href="/cabinet/notifications">
-                                <i class="bi bi-bell me-2"></i>Сповіщення
-                                <span id="notif-badge"
-                                      hx-get="/cabinet/notifications/count"
-                                      hx-trigger="load, every 60s"
-                                      hx-target="#notif-badge"
-                                      hx-swap="outerHTML"></span>
-                            </a>
-                        </li>
-                        <li sec:authorize="!hasRole('ADMIN')"><a class="dropdown-item" href="/cabinet/profile"><i class="bi bi-gear me-2"></i>Профіль</a></li>
-                        <!-- Адміністратор -->
-                        <li sec:authorize="hasRole('ADMIN')"><a class="dropdown-item" href="/admin/moderation"><i class="bi bi-check2-square me-2"></i>Оголошення на модерації</a></li>
-                        <li sec:authorize="hasRole('ADMIN')"><a class="dropdown-item" href="/admin/complaints"><i class="bi bi-flag me-2"></i>Нові скарги</a></li>
-                        <li sec:authorize="hasRole('ADMIN')"><a class="dropdown-item" href="/admin/users"><i class="bi bi-people me-2"></i>Управління користувачами</a></li>
-                        <li sec:authorize="hasRole('ADMIN')"><a class="dropdown-item" href="/admin/history"><i class="bi bi-clock-history me-2"></i>Історія оголошень</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li>
-                            <form th:action="@{/auth/logout}" method="post">
-                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                                <button type="submit" class="dropdown-item text-danger">
-                                    <i class="bi bi-box-arrow-right me-2"></i>Вийти
-                                </button>
-                            </form>
-                        </li>
-                    </ul>
+                <li class="nav-item" sec:authorize="isAuthenticated() and !hasRole('ADMIN')">
+                    <a class="btn btn-outline-light btn-sm ms-2" href="/cabinet/announcements">Кабінет</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="btn btn-outline-light btn-sm ms-2" href="/admin">Кабінет</a>
                 </li>
             </ul>
         </div>
@@ -105,41 +75,10 @@
 </main>
 
 <!-- Footer -->
-<footer class="bg-dark text-white mt-5 py-5">
-    <div class="container">
-        <div class="row g-4 mb-4">
-            <!-- Колонка 1 — Платформа -->
-            <div class="col-md-4">
-                <div class="footer-heading">Платформа</div>
-                <ul class="list-unstyled mb-0 small">
-                    <li class="mb-1"><a href="/auth/login" class="text-white-50 text-decoration-none">Вхід / Реєстрація</a></li>
-                    <li class="mb-1"><a href="/announcements?type=REQUEST" class="text-white-50 text-decoration-none">Оголошення про потреби</a></li>
-                    <li class="mb-1"><a href="/announcements?type=OFFER" class="text-white-50 text-decoration-none">Пропозиції допомоги</a></li>
-                    <li class="mb-1"><a href="/catalog/providers" class="text-white-50 text-decoration-none">Волонтери та організації</a></li>
-                </ul>
-            </div>
-            <!-- Колонка 2 — Для ВПО -->
-            <div class="col-md-4">
-                <div class="footer-heading">Для ВПО</div>
-                <ul class="list-unstyled mb-0 small">
-                    <li class="mb-1"><a href="/announcements?type=OFFER" class="text-white-50 text-decoration-none">Знайти допомогу</a></li>
-                    <li class="mb-1"><a href="/announcements/new" class="text-white-50 text-decoration-none">Подати заявку</a></li>
-                </ul>
-            </div>
-            <!-- Колонка 3 — Для волонтерів та організацій -->
-            <div class="col-md-4">
-                <div class="footer-heading">Для волонтерів та організацій</div>
-                <ul class="list-unstyled mb-0 small">
-                    <li class="mb-1"><a href="/announcements/new" class="text-white-50 text-decoration-none">Опублікувати пропозицію допомоги</a></li>
-                    <li class="mb-1"><a href="/announcements?type=REQUEST" class="text-white-50 text-decoration-none">Переглянути заявки</a></li>
-                </ul>
-            </div>
-        </div>
-        <hr class="border-secondary">
-        <div class="text-center">
-            <small class="text-white-50 d-block mb-1"><i class="bi bi-envelope me-1"></i>Підтримка: <a href="mailto:vpo_help@support.com" class="text-white-50">vpo_help@support.com</a></small>
-            <small class="text-white-50"><i class="bi bi-heart-fill text-danger me-1"></i>Разом ми сильніші &mdash; допомагаємо тим, хто цього потребує</small>
-        </div>
+<footer class="bg-dark text-white mt-5 py-4">
+    <div class="container text-center">
+        <small class="text-white-50 d-block mb-1"><i class="bi bi-envelope me-1"></i>Підтримка: <a href="mailto:vpo_help@support.com" class="text-white-50">vpo_help@support.com</a></small>
+        <small class="text-white-50"><i class="bi bi-heart-fill text-danger me-1"></i>Разом ми сильніші &mdash; допомагаємо тим, хто цього потребує.</small>
     </div>
 </footer>
 
