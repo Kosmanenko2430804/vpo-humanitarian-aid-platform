@@ -34,6 +34,14 @@
                     <i class="bi bi-gear me-2"></i>Профіль
                 </a>
             </li>
+            <li class="list-group-item">
+                <form th:action="@{/auth/logout}" method="post">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                    <button type="submit" class="btn btn-link text-decoration-none text-danger p-0">
+                        <i class="bi bi-box-arrow-right me-2"></i>Вийти
+                    </button>
+                </form>
+            </li>
         </ul>
     </div>
 </div>
