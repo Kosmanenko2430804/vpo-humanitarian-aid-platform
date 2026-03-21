@@ -62,7 +62,6 @@ public class NotificationService {
         var a = event.announcement();
         String body = "Вітаємо, " + a.getAuthor().getFullName() + "!\n\n" +
             "Ваше оголошення «" + a.getTitle() + "» успішно пройшло модерацію та опубліковано на платформі.\n\n" +
-            "Переглянути оголошення: " + baseUrl + "/announcements/" + a.getId() + "\n\n" +
             "З повагою,\nКоманда ВПО Допомога";
         notify(a.getAuthor(), body, "Ваше оголошення опубліковано");
     }
@@ -266,16 +265,4 @@ public class NotificationService {
         notificationRepository.saveAll(unread);
     }
 
-    /**
-     * Позначає одне конкретне сповіщення як прочитане.
-     *
-     * @param notificationId ідентифікатор сповіщення
-     */
-    @Transactional
-    public void markRead(Long notificationId) {
-        notificationRepository.findById(notificationId).ifPresent(n -> {
-            n.setIsRead(true);
-            notificationRepository.save(n);
-        });
-    }
 }
