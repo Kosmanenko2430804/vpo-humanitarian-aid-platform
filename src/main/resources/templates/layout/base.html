@@ -24,18 +24,6 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarMain">
             <ul class="navbar-nav me-auto">
-                <li class="nav-item">
-                    <a class="nav-link fw-semibold text-white" href="/announcements"
-                       th:classappend="${requestURI != null && requestURI.startsWith('/announcements')} ? 'active'">
-                        Оголошення
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link fw-semibold text-white" href="/catalog/providers"
-                       th:classappend="${requestURI != null && requestURI.startsWith('/catalog')} ? 'active'">
-                        Волонтери та організації
-                    </a>
-                </li>
             </ul>
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item" sec:authorize="!isAuthenticated()">
