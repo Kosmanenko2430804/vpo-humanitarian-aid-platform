@@ -59,6 +59,9 @@ public class Announcement {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @Column(name = "donation_url")
+    private String donationUrl;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @BatchSize(size = 30)
     @JoinTable(
