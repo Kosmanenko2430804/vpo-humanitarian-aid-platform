@@ -20,7 +20,7 @@
                 <div th:if="${#lists.isEmpty(myApplications)}" class="text-muted">Ви ще не подавали заявок</div>
                 <div class="row g-3" th:unless="${#lists.isEmpty(myApplications)}">
                     <div th:each="app : ${myApplications}" class="col-12">
-                        <div class="card shadow-sm">
+                        <div class="card">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-start">
                                     <div>
@@ -81,7 +81,7 @@
                 <div th:if="${#lists.isEmpty(receivedApplications)}" class="text-muted">Немає заявок</div>
                 <div class="row g-3" th:unless="${#lists.isEmpty(receivedApplications)}">
                     <div th:each="app : ${receivedApplications}" class="col-12">
-                        <div class="card shadow-sm">
+                        <div class="card">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-start">
                                     <div class="flex-grow-1">

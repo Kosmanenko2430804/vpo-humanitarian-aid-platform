@@ -34,3 +34,4 @@ build/
 
 ### Environment variables ###
 .env
+src/main/resources/application-local.yaml

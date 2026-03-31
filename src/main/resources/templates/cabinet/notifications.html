@@ -16,7 +16,7 @@
             <div th:if="${#lists.isEmpty(notifications)}" class="text-center py-5">
                 <p class="text-muted">Немає сповіщень</p>
             </div>
-            <div class="list-group shadow-sm" th:unless="${#lists.isEmpty(notifications)}">
+            <div class="list-group" th:unless="${#lists.isEmpty(notifications)}">
                 <div th:each="n : ${notifications}"
                      th:class="${!n.isRead} ? 'list-group-item list-group-item-action list-group-item-light' : 'list-group-item list-group-item-action'">
                     <div class="d-flex justify-content-between align-items-start">

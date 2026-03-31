@@ -17,7 +17,7 @@
     </div>
     <div class="row g-3" th:unless="${#lists.isEmpty(complaints)}">
         <div th:each="c : ${complaints}" class="col-12">
-            <div th:class="${c.status == 'PENDING'} ? 'card shadow-sm border-warning' : 'card shadow-sm border-0 opacity-75'">
+            <div th:class="${c.status == 'PENDING'} ? 'card border-warning' : 'card border-0 opacity-75'">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start">
                         <div>

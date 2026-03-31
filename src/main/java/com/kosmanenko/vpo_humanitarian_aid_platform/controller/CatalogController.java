@@ -1,7 +1,6 @@
 package com.kosmanenko.vpo_humanitarian_aid_platform.controller;
 
 import com.kosmanenko.vpo_humanitarian_aid_platform.enums.AnnouncementStatus;
-import com.kosmanenko.vpo_humanitarian_aid_platform.enums.AnnouncementType;
 import com.kosmanenko.vpo_humanitarian_aid_platform.enums.ProviderType;
 import com.kosmanenko.vpo_humanitarian_aid_platform.model.User;
 import com.kosmanenko.vpo_humanitarian_aid_platform.repository.CategoryRepository;

@@ -9,130 +9,48 @@
 <body>
 <main>
 <!-- Hero Section -->
-<section class="hero-section text-white py-2 mb-3">
-    <div class="container py-1">
-        <div class="row align-items-center g-2">
-            <div class="col-auto">
-                <svg viewBox="0 0 500 380" xmlns="http://www.w3.org/2000/svg" style="max-width:200px;width:100%;" aria-hidden="true">
-                    <circle cx="250" cy="190" r="170" fill="rgba(255,255,255,0.07)"/>
-                    <polygon points="250,60 170,130 330,130" fill="#FFD500"/>
-                    <rect x="185" y="130" width="130" height="110" rx="4" fill="#ffffff" opacity="0.95"/>
-                    <rect x="225" y="175" width="50" height="65" rx="4" fill="#005BBB"/>
-                    <rect x="197" y="148" width="35" height="28" rx="3" fill="#b3d1ff"/>
-                    <rect x="270" y="148" width="35" height="28" rx="3" fill="#b3d1ff"/>
-                    <circle cx="130" cy="215" r="22" fill="#FFD500"/>
-                    <rect x="108" y="237" width="44" height="55" rx="12" fill="#FFD500" opacity="0.85"/>
-                    <circle cx="370" cy="215" r="22" fill="#ffffff" opacity="0.9"/>
-                    <rect x="348" y="237" width="44" height="55" rx="12" fill="#ffffff" opacity="0.75"/>
-                    <path d="M152 255 Q195 240 230 258" stroke="#FFD500" stroke-width="5" fill="none" stroke-linecap="round"/>
-                    <path d="M348 255 Q305 240 270 258" stroke="#ffffff" stroke-width="5" fill="none" opacity="0.85" stroke-linecap="round"/>
-                    <path d="M250 268 C250 268 232 252 232 243 C232 237 237 232 244 232 C247 232 250 235 250 235 C250 235 253 232 256 232 C263 232 268 237 268 243 C268 252 250 268 250 268Z" fill="#e53935"/>
-                    <circle cx="155" cy="170" r="4" fill="#FFD500" opacity="0.7"/>
-                    <circle cx="345" cy="170" r="4" fill="#FFD500" opacity="0.7"/>
-                    <circle cx="250" cy="38" r="5" fill="#FFD500" opacity="0.8"/>
-                    <circle cx="115" cy="300" r="3" fill="#ffffff" opacity="0.5"/>
-                    <circle cx="385" cy="300" r="3" fill="#ffffff" opacity="0.5"/>
-                </svg>
-            </div>
-            <div class="col">
-                <h1 class="h2 fw-bold mb-2">Платформа допомоги ВПО</h1>
-                <p class="mb-0 opacity-90">Об'єднуємо тих, хто потребує підтримки, з волонтерами та організаціями, що готові допомогти</p>
-            </div>
-        </div>
+<div class="hero-section text-white py-4 mb-4">
+    <div class="container">
+        <h1 class="fw-bold">Платформа допомоги ВПО</h1>
+        <p class="mb-0 opacity-90">Об'єднуємо тих, хто потребує підтримки, з волонтерами та організаціями, що готові допомогти</p>
     </div>
-</section>
+</div>
 
 <!-- How it works -->
 <div class="container mb-5">
-    <h2 class="text-center fw-bold mb-2">Як працює платформа?</h2>
-    <p class="text-center text-muted mb-4">Оберіть свій сценарій і розпочніть за кілька хвилин</p>
-
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
-
-        <!-- Ліва колонка — потребуєте допомоги -->
-        <div class="rounded-3 overflow-hidden shadow-sm border" style="border-color:#FFD500!important;">
-            <!-- Шапка -->
-            <div class="d-flex align-items-center gap-3 px-4 py-3" style="background:#FFFBE6; border-bottom:2px solid #FFD500;">
-                <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
-                     style="width:44px;height:44px;background:#FFD500;color:#5C4200;">1</div>
-                <h5 class="fw-bold mb-0" style="color:#5C4200;">Якщо потребуєте допомоги</h5>
-            </div>
-            <!-- Кроки -->
-            <div class="p-4 d-flex flex-column gap-3" style="background:#fff;">
-                <div class="d-flex align-items-start gap-3">
-                    <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold flex-shrink-0"
-                         style="width:32px;height:32px;background:#FFFBE6;color:#7A5C00;border:2px solid #FFD500;font-size:.9rem;">1</div>
-                    <div>
-                        <div class="fw-semibold mb-1">Створіть акаунт</div>
-                        <div class="text-muted small">Зареєструйтесь як внутрішньо переміщена особа</div>
-                    </div>
+    <h2 class="text-center fw-bold mb-4">Як працює платформа?</h2>
+    <div class="row g-3">
+        <div class="col-md-6">
+            <div class="card h-100 border-warning">
+                <div class="card-header bg-warning text-dark fw-bold">Якщо потребуєте допомоги</div>
+                <div class="card-body">
+                    <ol class="mb-0">
+                        <li class="mb-2">Зареєструйтесь як внутрішньо переміщена особа</li>
+                        <li class="mb-2">Опублікуйте оголошення — опишіть що потрібно і в якому місті</li>
+                        <li>Чекайте відгуку або знайдіть допомогу в каталозі оголошень</li>
+                    </ol>
                 </div>
-                <div class="d-flex align-items-start gap-3">
-                    <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold flex-shrink-0"
-                         style="width:32px;height:32px;background:#FFFBE6;color:#7A5C00;border:2px solid #FFD500;font-size:.9rem;">2</div>
-                    <div>
-                        <div class="fw-semibold mb-1">Опублікуйте оголошення</div>
-                        <div class="text-muted small">Опишіть що вам потрібно і в якому місті — оголошення побачать всі бажаючі допомогти</div>
-                    </div>
-                </div>
-                <div class="d-flex align-items-start gap-3">
-                    <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold flex-shrink-0"
-                         style="width:32px;height:32px;background:#FFFBE6;color:#7A5C00;border:2px solid #FFD500;font-size:.9rem;">3</div>
-                    <div>
-                        <div class="fw-semibold mb-1">Отримайте підтримку</div>
-                        <div class="text-muted small">Чекайте відгуку або знайдіть потрібну допомогу в каталозі оголошень волонтерів та організацій</div>
-                    </div>
+                <div class="card-footer bg-transparent">
+                    <a href="/announcements?type=OFFER" class="btn btn-warning w-100">Отримати допомогу</a>
                 </div>
             </div>
         </div>
-
-        <!-- Права колонка — хочете допомогти -->
-        <div class="rounded-3 overflow-hidden shadow-sm border" style="border-color:#5BAD6F!important;">
-            <!-- Шапка -->
-            <div class="d-flex align-items-center gap-3 px-4 py-3" style="background:#EDF7EF; border-bottom:2px solid #5BAD6F;">
-                <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
-                     style="width:44px;height:44px;background:#5BAD6F;color:#fff;">2</div>
-                <h5 class="fw-bold mb-0" style="color:#1E6B33;">Якщо хочете допомогти</h5>
-            </div>
-            <!-- Кроки -->
-            <div class="p-4 d-flex flex-column gap-3" style="background:#fff;">
-                <div class="d-flex align-items-start gap-3">
-                    <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold flex-shrink-0"
-                         style="width:32px;height:32px;background:#EDF7EF;color:#1E6B33;border:2px solid #5BAD6F;font-size:.9rem;">1</div>
-                    <div>
-                        <div class="fw-semibold mb-1">Створіть акаунт</div>
-                        <div class="text-muted small">Зареєструйтесь як волонтер або представник організації</div>
-                    </div>
+        <div class="col-md-6">
+            <div class="card h-100 border-success">
+                <div class="card-header bg-success text-white fw-bold">Якщо хочете допомогти</div>
+                <div class="card-body">
+                    <ol class="mb-0">
+                        <li class="mb-2">Зареєструйтесь як волонтер або представник організації</li>
+                        <li class="mb-2">Опублікуйте оголошення — вкажіть чим та де можете допомогти</li>
+                        <li>Відгукніться на заявку ВПО і домовтесь про передачу допомоги</li>
+                    </ol>
                 </div>
-                <div class="d-flex align-items-start gap-3">
-                    <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold flex-shrink-0"
-                         style="width:32px;height:32px;background:#EDF7EF;color:#1E6B33;border:2px solid #5BAD6F;font-size:.9rem;">2</div>
-                    <div>
-                        <div class="fw-semibold mb-1">Опублікуйте оголошення</div>
-                        <div class="text-muted small">Вкажіть чим та де можете допомогти — приймайте заявки від тих, хто потребує</div>
-                    </div>
-                </div>
-                <div class="d-flex align-items-start gap-3">
-                    <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold flex-shrink-0"
-                         style="width:32px;height:32px;background:#EDF7EF;color:#1E6B33;border:2px solid #5BAD6F;font-size:.9rem;">3</div>
-                    <div>
-                        <div class="fw-semibold mb-1">Допоможіть вже сьогодні</div>
-                        <div class="text-muted small">Відгукніться на заявку ВПО і домовтесь про передачу допомоги</div>
-                    </div>
+                <div class="card-footer bg-transparent">
+                    <a href="/announcements?type=REQUEST" class="btn btn-success w-100">Надати допомогу</a>
                 </div>
             </div>
         </div>
-
     </div>
-
-    <!-- CTA кнопки -->
-    <div class="mt-4" style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
-        <a href="/announcements?type=OFFER" class="btn btn-lg fw-semibold"
-           style="background:#FFD500;color:#5C4200;">Отримати допомогу</a>
-        <a href="/announcements?type=REQUEST" class="btn btn-lg fw-semibold"
-           style="background:#2E8B4A;color:#EDF7EF;">Надати допомогу</a>
-    </div>
-
 </div>
 
 
@@ -144,22 +62,13 @@
     </div>
     <div class="row g-3">
         <div th:each="p : ${latestProviders}" class="col-md-4">
-            <div class="card h-100 shadow-sm provider-card">
-                <div class="card-body text-center p-4">
+            <div class="card">
+                <div class="card-body">
                     <h6 class="fw-bold" th:text="${p.orgName != null ? p.orgName : p.fullName}"></h6>
                     <span th:class="${p.providerType != null && p.providerType.name() == 'ORGANIZATION'} ? 'badge bg-primary' : 'badge bg-secondary'"
                           th:text="${p.providerType != null && p.providerType.name() == 'ORGANIZATION'} ? 'Організація' : 'Волонтер'"></span>
                     <p class="text-muted small mt-2" th:text="${p.city}"></p>
-                    <div th:if="${p.rating != null}" class="mb-2">
-                        <i class="bi bi-star-fill text-warning"></i>
-                        <span th:text="${p.rating}"></span>
-                        <small class="text-muted">(<span th:text="${p.ratingCount}"></span>)</small>
-                    </div>
-                    <div class="d-flex flex-wrap gap-1 justify-content-center mb-3">
-                        <span th:each="cat : ${p.providerCategories}"
-                              class="badge bg-light text-dark border small" th:text="${cat.name}"></span>
-                    </div>
-                    <a th:href="@{/catalog/providers/{id}(id=${p.id})}" class="btn btn-sm btn-outline-primary w-100">
+                    <a th:href="@{/catalog/providers/{id}(id=${p.id})}" class="btn btn-sm btn-outline-primary">
                         Переглянути профіль
                     </a>
                 </div>
@@ -179,18 +88,13 @@
     </div>
     <div class="row g-3">
         <div th:each="a : ${latestOffers}" class="col-md-4">
-            <div class="card h-100 shadow-sm announcement-card">
+            <div class="card">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between mb-2">
-                        <span class="badge bg-success">Пропозиція</span>
-                        <small class="text-muted" th:text="${#temporals.format(a.createdAt, 'dd.MM.yyyy')}"></small>
-                    </div>
-                    <h6 class="card-title fw-bold" th:text="${a.title}"></h6>
+                    <span class="badge bg-success">Пропозиція</span>
+                    <h6 class="card-title fw-bold mt-2" th:text="${a.title}"></h6>
                     <p class="card-text text-muted small" th:text="${#strings.abbreviate(a.description, 100)}"></p>
-                    <div class="d-flex justify-content-between align-items-center mt-2">
-                        <span class="text-muted small"><i class="bi bi-geo-alt me-1"></i><span th:text="${a.city}"></span></span>
-                        <a th:href="@{/announcements/{id}(id=${a.id})}" class="btn btn-sm btn-outline-primary">Детальніше</a>
-                    </div>
+                    <p class="text-muted small"><i class="bi bi-geo-alt me-1"></i><span th:text="${a.city}"></span></p>
+                    <a th:href="@{/announcements/{id}(id=${a.id})}" class="btn btn-sm btn-outline-primary">Детальніше</a>
                 </div>
             </div>
         </div>
@@ -208,18 +112,13 @@
     </div>
     <div class="row g-3">
         <div th:each="a : ${latestRequests}" class="col-md-4">
-            <div class="card h-100 shadow-sm announcement-card">
+            <div class="card">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between mb-2">
-                        <span class="badge bg-warning text-dark">Запит</span>
-                        <small class="text-muted" th:text="${#temporals.format(a.createdAt, 'dd.MM.yyyy')}"></small>
-                    </div>
-                    <h6 class="card-title fw-bold" th:text="${a.title}"></h6>
+                    <span class="badge bg-warning text-dark">Запит</span>
+                    <h6 class="card-title fw-bold mt-2" th:text="${a.title}"></h6>
                     <p class="card-text text-muted small" th:text="${#strings.abbreviate(a.description, 100)}"></p>
-                    <div class="d-flex justify-content-between align-items-center mt-2">
-                        <span class="text-muted small"><i class="bi bi-geo-alt me-1"></i><span th:text="${a.city}"></span></span>
-                        <a th:href="@{/announcements/{id}(id=${a.id})}" class="btn btn-sm btn-outline-warning">Детальніше</a>
-                    </div>
+                    <p class="text-muted small"><i class="bi bi-geo-alt me-1"></i><span th:text="${a.city}"></span></p>
+                    <a th:href="@{/announcements/{id}(id=${a.id})}" class="btn btn-sm btn-outline-warning">Детальніше</a>
                 </div>
             </div>
         </div>
@@ -233,16 +132,14 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="fw-bold mb-0">Підтримати платформу</h2>
     </div>
-    <div class="card border-primary shadow-sm">
+    <div class="card border-primary">
         <div class="card-body p-4">
             <p class="text-muted mb-3">Платформа існує завдяки підтримці небайдужих людей. Кошти спрямовуються на підтримку технічної інфраструктури, розвиток нових можливостей та безперебійну роботу сервісу для ВПО і волонтерів.</p>
             <form action="/payment/platform" method="post"
                   class="d-flex gap-2 align-items-center flex-wrap">
                 <input type="number" name="amount" class="form-control no-spinner" style="max-width:160px;"
                        min="1" max="100000" step="1" required placeholder="Сума (грн)">
-                <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-heart me-1"></i>Підтримати
-                </button>
+                <button type="submit" class="btn btn-primary">Підтримати</button>
             </form>
         </div>
     </div>
