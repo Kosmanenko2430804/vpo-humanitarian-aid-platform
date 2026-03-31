@@ -87,6 +87,7 @@ public class AnnouncementController {
                          @RequestParam String city,
                          @RequestParam(required = false) Boolean acceptsApplications,
                          @RequestParam(required = false) List<Long> categoryIds,
+                         @RequestParam(required = false) String donationUrl,
                          @AuthenticationPrincipal UserDetails userDetails,
                          RedirectAttributes redirectAttributes) {
         if (categoryIds == null || categoryIds.isEmpty()) {
@@ -97,7 +98,7 @@ public class AnnouncementController {
         AnnouncementType type = user.getRole() == UserRole.VPO ? AnnouncementType.REQUEST : AnnouncementType.OFFER;
 
         try {
-            announcementService.create(title, description, city, type, acceptsApplications, categoryIds, user);
+            announcementService.create(title, description, city, type, acceptsApplications, categoryIds, user, donationUrl);
             redirectAttributes.addFlashAttribute("success", "Оголошення надіслано на модерацію");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
@@ -128,6 +129,7 @@ public class AnnouncementController {
                          @RequestParam String city,
                          @RequestParam(required = false) Boolean acceptsApplications,
                          @RequestParam(required = false) List<Long> categoryIds,
+                         @RequestParam(required = false) String donationUrl,
                          @AuthenticationPrincipal UserDetails userDetails,
                          RedirectAttributes redirectAttributes) {
         if (categoryIds == null || categoryIds.isEmpty()) {
@@ -136,7 +138,7 @@ public class AnnouncementController {
         }
         User user = userService.findByEmail(userDetails.getUsername()).orElseThrow();
         try {
-            announcementService.update(id, title, description, city, acceptsApplications, categoryIds, user);
+            announcementService.update(id, title, description, city, acceptsApplications, categoryIds, user, donationUrl);
             redirectAttributes.addFlashAttribute("success", "Оголошення оновлено та надіслано на модерацію");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
@@ -158,19 +160,6 @@ public class AnnouncementController {
         return "redirect:/cabinet/announcements";
     }
 
-    @PostMapping("/{id}/republish")
-    public String republish(@PathVariable Long id,
-                            @AuthenticationPrincipal UserDetails userDetails,
-                            RedirectAttributes redirectAttributes) {
-        User user = userService.findByEmail(userDetails.getUsername()).orElseThrow();
-        try {
-            announcementService.republish(id, user);
-            redirectAttributes.addFlashAttribute("success", "Оголошення надіслано на повторну модерацію");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
-        }
-        return "redirect:/cabinet/announcements";
-    }
 
     @PostMapping("/{id}/complaint")
     public String submitComplaint(@PathVariable Long id,

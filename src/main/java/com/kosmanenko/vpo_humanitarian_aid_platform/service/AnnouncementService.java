@@ -173,6 +173,7 @@ public class AnnouncementService {
             .acceptsApplications(acceptsApplications != null ? acceptsApplications : true)
             .author(author)
             .categories(categories)
+            .donationUrl(donationUrl != null && !donationUrl.isBlank() ? donationUrl : null)
             .build();
 
         Announcement saved = announcementRepository.save(announcement);
@@ -200,7 +201,7 @@ public class AnnouncementService {
      */
     @Transactional
     public Announcement update(Long id, String title, String description, String city,
-                               Boolean acceptsApplications, List<Long> categoryIds, User currentUser) {
+                               Boolean acceptsApplications, List<Long> categoryIds, User currentUser, String donationUrl) {
         Announcement announcement = announcementRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Оголошення не знайдено"));
 
@@ -223,6 +224,7 @@ public class AnnouncementService {
         announcement.setCity(city);
         announcement.setAcceptsApplications(acceptsApplications != null ? acceptsApplications : true);
         announcement.setCategories(categories);
+        announcement.setDonationUrl(donationUrl != null && !donationUrl.isBlank() ? donationUrl : null);
         // Скидаємо статус до PENDING для повторної модерації
         announcement.setStatus(AnnouncementStatus.PENDING);
         announcement.setRejectionReason(null);
@@ -280,32 +282,6 @@ public class AnnouncementService {
         announcementRepository.save(announcement);
     }
 
-    /**
-     * Повторно публікує архівоване оголошення: переводить статус до {@code PENDING}
-     * для проходження повторної модерації.
-     *
-     * @param id          ідентифікатор оголошення
-     * @param currentUser поточний автентифікований користувач
-     * @throws RuntimeException якщо поточний користувач не є автором
-     *                          або оголошення не в статусі {@code ARCHIVED}
-     */
-    @Transactional
-    public void republish(Long id, User currentUser) {
-        Announcement a = announcementRepository.findById(id).orElseThrow();
-        // Перевірка прав доступу
-        if (!a.getAuthor().getId().equals(currentUser.getId())) {
-            throw new RuntimeException("Немає доступу");
-        }
-        // Дозволяємо повторну публікацію лише для архівованих оголошень
-        if (a.getStatus() != AnnouncementStatus.ARCHIVED) {
-            throw new RuntimeException("Повторно опублікувати можна лише архівоване оголошення");
-        }
-        a.setStatus(AnnouncementStatus.PENDING);
-        a.setArchivedAt(null);
-        announcementRepository.save(a);
-        eventPublisher.publishEvent(new AnnouncementSubmittedEvent(a,
-            "Оголошення \"" + a.getTitle() + "\" надіслано на повторну модерацію."));
-    }
 
     /**
      * Завершує оголошення автором: переводить статус до {@code COMPLETED}.
