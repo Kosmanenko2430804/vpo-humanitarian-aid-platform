@@ -36,8 +36,7 @@ public class PaymentController {
 
     @PostMapping("/callback")
     @ResponseBody
-    public String callback(@RequestParam String data, @RequestParam String signature) {
-        // LiqPay callback - verify and process
+    public String callback() {
         return "OK";
     }
 }

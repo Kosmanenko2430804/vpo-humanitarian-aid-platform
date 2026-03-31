@@ -10,7 +10,7 @@
 <div class="container py-4">
     <div class="row">
         <div class="col-md-4">
-            <div class="card shadow-sm mb-4">
+            <div class="card mb-4">
                 <div class="card-body text-center p-4">
                     <h4 class="fw-bold" th:text="${provider.orgName != null ? provider.orgName : provider.fullName}"></h4>
                     <span th:class="${provider.providerType != null && provider.providerType.name() == 'ORGANIZATION'} ? 'badge bg-primary' : 'badge bg-secondary'"
@@ -40,7 +40,7 @@
             <div th:if="${#lists.isEmpty(announcements)}" class="text-muted">Немає активних оголошень</div>
             <div class="row g-3" th:unless="${#lists.isEmpty(announcements)}">
                 <div th:each="a : ${announcements}" class="col-md-6">
-                    <div class="card shadow-sm h-100">
+                    <div class="card h-100">
                         <div class="card-body">
                             <span class="badge bg-success mb-2">Пропозиція</span>
                             <h6 class="fw-bold" th:text="${a.title}"></h6>

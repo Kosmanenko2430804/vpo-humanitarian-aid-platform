@@ -11,7 +11,7 @@
     <h2 class="fw-bold mb-4">Волонтери та організації</h2>
 
     <!-- Filters -->
-    <div class="card shadow-sm mb-4">
+    <div class="card mb-4">
         <div class="card-body">
             <form action="/catalog/providers" method="get" class="row g-2"
                   hx-get="/catalog/providers"
@@ -48,7 +48,7 @@
     <div id="results-container">
     <div class="row g-3">
         <div th:each="p : ${providers}" class="col-md-4">
-            <div class="card h-100 shadow-sm provider-card">
+            <div class="card h-100 provider-card">
                 <div class="card-body text-center p-4">
                     <h6 class="fw-bold" th:text="${p.orgName != null ? p.orgName : p.fullName}"></h6>
                     <span th:class="${p.providerType != null && p.providerType.name() == 'ORGANIZATION'} ? 'badge bg-primary' : 'badge bg-secondary'"

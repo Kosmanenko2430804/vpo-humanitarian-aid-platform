@@ -14,7 +14,7 @@
     </div>
 
     <!-- Filters -->
-    <div class="card shadow-sm mb-4">
+    <div class="card mb-4">
         <div class="card-body">
             <form action="/announcements" method="get" class="row g-2"
                   hx-get="/announcements"
@@ -56,7 +56,7 @@
     <div id="results-container">
     <div class="row g-3" id="announcementsList">
         <div th:each="a : ${announcements.content}" class="col-md-4">
-            <div class="card h-100 shadow-sm announcement-card">
+            <div class="card h-100 announcement-card">
                 <div class="card-body d-flex flex-column">
                     <div class="d-flex justify-content-between mb-2">
                         <span th:class="${a.type.name() == 'OFFER'} ? 'badge bg-success' : 'badge bg-warning text-dark'"
