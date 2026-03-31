@@ -132,6 +132,7 @@
         <a href="/announcements?type=REQUEST" class="btn btn-lg fw-semibold"
            style="background:#2E8B4A;color:#EDF7EF;">Надати допомогу</a>
     </div>
+
 </div>
 
 
@@ -189,6 +190,25 @@
         </div>
         <div th:if="${#lists.isEmpty(latestRequests)}" class="col-12">
             <p class="text-muted text-center">Поки немає запитів</p>
+        </div>
+    </div>
+</div>
+<!-- Support platform -->
+<div class="container mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold mb-0">Підтримати платформу</h2>
+    </div>
+    <div class="card border-primary shadow-sm">
+        <div class="card-body p-4">
+            <p class="text-muted mb-3">Платформа існує завдяки підтримці небайдужих людей. Кошти спрямовуються на підтримку технічної інфраструктури, розвиток нових можливостей та безперебійну роботу сервісу для ВПО і волонтерів.</p>
+            <form action="/payment/platform" method="post"
+                  class="d-flex gap-2 align-items-center flex-wrap">
+                <input type="number" name="amount" class="form-control no-spinner" style="max-width:160px;"
+                       min="1" max="100000" step="1" required placeholder="Сума (грн)">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-heart me-1"></i>Підтримати
+                </button>
+            </form>
         </div>
     </div>
 </div>
