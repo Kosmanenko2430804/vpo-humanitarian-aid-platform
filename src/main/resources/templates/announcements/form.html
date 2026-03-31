@@ -54,6 +54,14 @@
                             <div id="categoryError" class="text-danger small mt-1 d-none">Оберіть принаймні одну категорію</div>
                         </div>
 
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Посилання на збір коштів <span class="text-muted fw-normal">(необов'язково)</span></label>
+                            <input type="url" name="donationUrl" class="form-control"
+                                   th:value="${announcement?.donationUrl}"
+                                   >
+                            <div class="form-text">Вкажіть посилання на Monobank банку або ПриватБанк конверт, якщо хочете приймати фінансову підтримку</div>
+                        </div>
+
                         <!-- Only for PROVIDER -->
                         <div sec:authorize="hasRole('PROVIDER')" class="mb-3 form-check">
                             <input type="checkbox" class="form-check-input" name="acceptsApplications"

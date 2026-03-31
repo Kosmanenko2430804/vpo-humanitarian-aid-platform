@@ -44,21 +44,20 @@ public class PaymentService {
      *   {@code result_url}: URL для перенаправлення після оплати
      *   {@code server_url}: URL для callback від LiqPay
      *
-     * @param announcementId ідентифікатор оголошення (для формування order_id та URL)
-     * @param amount         сума пожертви в гривнях
-     * @param description    опис призначення платежу
+     * @param amount      сума пожертви в гривнях
+     * @param description опис призначення платежу
      * @return рядок даних, закодований Base64
      */
-    public String generateData(Long announcementId, double amount, String description) {
+    public String generateData(double amount, String description) {
         // Формуємо JSON параметри платежу відповідно до специфікації LiqPay API v3
         String json = String.format(
             "{\"version\":\"3\",\"public_key\":\"%s\",\"action\":\"pay\"," +
             "\"amount\":\"%.2f\",\"currency\":\"UAH\",\"description\":\"%s\"," +
-            "\"order_id\":\"order_%d_%d\",\"sandbox\":\"1\"," +
-            "\"result_url\":\"%s/payment/result?id=%d\"," +
+            "\"order_id\":\"order_%d\",\"sandbox\":\"1\"," +
+            "\"result_url\":\"%s/payment/result\"," +
             "\"server_url\":\"%s/payment/callback\"}",
-            publicKey, amount, description, announcementId, System.currentTimeMillis(),
-            baseUrl, announcementId, baseUrl);
+            publicKey, amount, description, System.currentTimeMillis(),
+            baseUrl, baseUrl);
         // Кодуємо JSON у Base64 для передачі у форму
         return Base64.getEncoder().encodeToString(json.getBytes(StandardCharsets.UTF_8));
     }

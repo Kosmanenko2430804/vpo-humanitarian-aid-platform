@@ -84,7 +84,7 @@ public class SecurityConfig {
                 .successHandler(oAuth2SuccessHandler)
             )
             .csrf(csrf -> csrf
-                .ignoringRequestMatchers("/payment/callback")
+                .ignoringRequestMatchers("/payment/callback", "/payment/platform")
             );
         return http.build();
     }

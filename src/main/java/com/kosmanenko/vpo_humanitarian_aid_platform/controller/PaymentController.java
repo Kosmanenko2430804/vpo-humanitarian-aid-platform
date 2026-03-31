@@ -1,7 +1,5 @@
 package com.kosmanenko.vpo_humanitarian_aid_platform.controller;
 
-import com.kosmanenko.vpo_humanitarian_aid_platform.model.Announcement;
-import com.kosmanenko.vpo_humanitarian_aid_platform.service.AnnouncementService;
 import com.kosmanenko.vpo_humanitarian_aid_platform.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -15,33 +13,24 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class PaymentController {
 
     private final PaymentService paymentService;
-    private final AnnouncementService announcementService;
 
-    @PostMapping("/donate/{announcementId}")
-    public String processDonate(@PathVariable Long announcementId,
-                                @RequestParam double amount,
-                                Model model,
-                                RedirectAttributes redirectAttributes) {
+    @PostMapping("/platform")
+    public String processPlatformDonate(@RequestParam double amount,
+                                        Model model,
+                                        RedirectAttributes redirectAttributes) {
         if (amount < 1 || amount > 100_000) {
             redirectAttributes.addFlashAttribute("error", "Сума має бути від 1 до 100 000 грн");
-            return "redirect:/announcements/" + announcementId;
+            return "redirect:/";
         }
-        Announcement announcement = announcementService.findById(announcementId).orElseThrow();
-        String data = paymentService.generateData(announcementId, amount,
-            "Підтримка для: " + announcement.getTitle());
+        String data = paymentService.generateData(amount, "Підтримка платформи ВПО Допомога");
         String signature = paymentService.generateSignature(data);
         model.addAttribute("data", data);
         model.addAttribute("signature", signature);
-        model.addAttribute("announcement", announcement);
         return "payment/checkout";
     }
 
     @GetMapping("/result")
-    public String result(@RequestParam Long id,
-                         @RequestParam(required = false) String status,
-                         Model model) {
-        announcementService.findById(id).ifPresent(a -> model.addAttribute("announcement", a));
-        model.addAttribute("paymentStatus", status);
+    public String result() {
         return "payment/result";
     }
 
