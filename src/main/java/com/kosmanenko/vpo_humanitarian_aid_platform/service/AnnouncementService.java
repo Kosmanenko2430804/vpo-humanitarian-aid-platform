@@ -158,7 +158,7 @@ public class AnnouncementService {
     @Transactional
     public Announcement create(String title, String description, String city,
                                AnnouncementType type, Boolean acceptsApplications,
-                               List<Long> categoryIds, User author) {
+                               List<Long> categoryIds, User author, String donationUrl) {
         // Завантажуємо категорії за ідентифікаторами
         Set<Category> categories = categoryIds.stream()
             .map(id -> categoryRepository.findById(id).orElseThrow())
