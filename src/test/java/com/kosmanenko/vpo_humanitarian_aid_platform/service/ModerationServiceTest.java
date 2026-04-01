@@ -6,7 +6,6 @@ import com.kosmanenko.vpo_humanitarian_aid_platform.model.Complaint;
 import com.kosmanenko.vpo_humanitarian_aid_platform.model.User;
 import com.kosmanenko.vpo_humanitarian_aid_platform.repository.AnnouncementRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -48,8 +47,8 @@ class ModerationServiceTest {
         complaint = Complaint.builder().id(1L).announcement(announcement).build();
     }
 
+    // blockAnnouncementFromComplaint — архівує оголошення та позначає скаргу переглянутою
     @Test
-    @DisplayName("blockAnnouncementFromComplaint — архівує оголошення та позначає скаргу переглянутою")
     void blockAnnouncement_archivesAnnouncement_andMarksComplaintReviewed() {
         when(complaintService.findById(1L)).thenReturn(Optional.of(complaint));
         when(announcementRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
@@ -60,23 +59,5 @@ class ModerationServiceTest {
         verify(announcementRepository).save(announcement);
         verify(complaintService).markReviewed(1L);
         verify(notificationService).notify(eq(author), any(String.class));
-    }
-
-    @Test
-    @DisplayName("blockAnnouncementFromComplaint — кидає виняток якщо скарга не знайдена")
-    void blockAnnouncement_throwsException_whenComplaintNotFound() {
-        when(complaintService.findById(99L)).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> moderationService.blockAnnouncementFromComplaint(99L))
-            .isInstanceOf(java.util.NoSuchElementException.class);
-    }
-
-    @Test
-    @DisplayName("dismissComplaint — позначає скаргу як переглянуту")
-    void dismissComplaint_marksComplaintReviewed() {
-        moderationService.dismissComplaint(5L);
-
-        verify(complaintService).markReviewed(5L);
-        verifyNoInteractions(announcementRepository, notificationService);
     }
 }

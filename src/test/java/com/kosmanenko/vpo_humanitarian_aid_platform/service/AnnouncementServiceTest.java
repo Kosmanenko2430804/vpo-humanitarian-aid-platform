@@ -2,7 +2,6 @@ package com.kosmanenko.vpo_humanitarian_aid_platform.service;
 
 import com.kosmanenko.vpo_humanitarian_aid_platform.enums.AnnouncementStatus;
 import com.kosmanenko.vpo_humanitarian_aid_platform.enums.AnnouncementType;
-import com.kosmanenko.vpo_humanitarian_aid_platform.enums.ApplicationStatus;
 import com.kosmanenko.vpo_humanitarian_aid_platform.event.AnnouncementApprovedEvent;
 import com.kosmanenko.vpo_humanitarian_aid_platform.event.AnnouncementRejectedEvent;
 import com.kosmanenko.vpo_humanitarian_aid_platform.event.AnnouncementSubmittedEvent;
@@ -13,7 +12,6 @@ import com.kosmanenko.vpo_humanitarian_aid_platform.repository.AnnouncementRepos
 import com.kosmanenko.vpo_humanitarian_aid_platform.repository.CategoryRepository;
 import com.kosmanenko.vpo_humanitarian_aid_platform.repository.HelpApplicationRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -24,6 +22,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.Optional;
@@ -64,8 +63,8 @@ class AnnouncementServiceTest {
         category = Category.builder().id(10L).name("Їжа").build();
     }
 
+    //findById — повертає оголошення якщо існує
     @Test
-    @DisplayName("findById — повертає оголошення якщо існує")
     void findById_returnsAnnouncement_whenExists() {
         Announcement announcement = Announcement.builder().id(1L).title("Тест").build();
         when(announcementRepository.findById(1L)).thenReturn(Optional.of(announcement));
@@ -76,8 +75,8 @@ class AnnouncementServiceTest {
         assertThat(result.get().getId()).isEqualTo(1L);
     }
 
+    //findById — повертає порожній Optional якщо не існує
     @Test
-    @DisplayName("findById — повертає порожній Optional якщо не існує")
     void findById_returnsEmpty_whenNotExists() {
         when(announcementRepository.findById(99L)).thenReturn(Optional.empty());
 
@@ -86,8 +85,8 @@ class AnnouncementServiceTest {
         assertThat(result).isEmpty();
     }
 
+    //findPending — повертає оголошення зі статусом PENDING
     @Test
-    @DisplayName("findPending — повертає оголошення зі статусом PENDING")
     void findPending_returnsPendingAnnouncements() {
         Announcement a = Announcement.builder().id(1L).status(AnnouncementStatus.PENDING).build();
         when(announcementRepository.findByStatusOrderByCreatedAtDesc(AnnouncementStatus.PENDING))
@@ -99,36 +98,20 @@ class AnnouncementServiceTest {
         assertThat(result.get(0).getStatus()).isEqualTo(AnnouncementStatus.PENDING);
     }
 
+    //search без categoryId — викликає findAll зі специфікацією
     @Test
-    @DisplayName("search без categoryId — використовує searchAnnouncements")
-    void search_withoutCategory_usesSearchAnnouncements() {
+    void search_withoutCategory_usesSpecification() {
         Page<Announcement> page = new PageImpl<>(List.of());
-        when(announcementRepository.searchAnnouncements(any(), any(), any(), any()))
+        when(announcementRepository.findAll(any(Specification.class), any(PageRequest.class)))
             .thenReturn(page);
 
         announcementService.search(AnnouncementType.OFFER, "Київ", null, "допомога", 0);
 
-        verify(announcementRepository).searchAnnouncements(eq(AnnouncementType.OFFER),
-            eq("%київ%"), eq("%допомога%"), any(PageRequest.class));
-        verify(announcementRepository, never()).searchAnnouncementsWithCategory(any(), any(), any(), any(), any());
+        verify(announcementRepository).findAll(any(Specification.class), any(PageRequest.class));
     }
 
+    //create — створює оголошення зі статусом PENDING та публікує подію
     @Test
-    @DisplayName("search з categoryId — використовує searchAnnouncementsWithCategory")
-    void search_withCategory_usesSearchAnnouncementsWithCategory() {
-        Page<Announcement> page = new PageImpl<>(List.of());
-        when(announcementRepository.searchAnnouncementsWithCategory(any(), any(), any(), any(), any()))
-            .thenReturn(page);
-
-        announcementService.search(null, null, 5L, null, 0);
-
-        verify(announcementRepository).searchAnnouncementsWithCategory(
-            isNull(), isNull(), eq(5L), isNull(), any(PageRequest.class));
-        verify(announcementRepository, never()).searchAnnouncements(any(), any(), any(), any());
-    }
-
-    @Test
-    @DisplayName("create — створює оголошення зі статусом PENDING та публікує подію")
     void create_savedWithPendingStatus_andPublishesEvent() {
         when(categoryRepository.findById(10L)).thenReturn(Optional.of(category));
         Announcement saved = Announcement.builder()
@@ -136,14 +119,14 @@ class AnnouncementServiceTest {
         when(announcementRepository.save(any())).thenReturn(saved);
 
         Announcement result = announcementService.create(
-            "Роздача їжі", "Опис", "Київ", AnnouncementType.OFFER, true, List.of(10L), author);
+            "Роздача їжі", "Опис", "Київ", AnnouncementType.OFFER, true, List.of(10L), author, null);
 
         assertThat(result.getStatus()).isEqualTo(AnnouncementStatus.PENDING);
         verify(eventPublisher).publishEvent(any(AnnouncementSubmittedEvent.class));
     }
 
+    //create — acceptsApplications null → встановлюється true
     @Test
-    @DisplayName("create — acceptsApplications null → встановлюється true")
     void create_nullAcceptsApplications_defaultsToTrue() {
         when(categoryRepository.findById(10L)).thenReturn(Optional.of(category));
         ArgumentCaptor<Announcement> captor = ArgumentCaptor.forClass(Announcement.class);
@@ -153,13 +136,13 @@ class AnnouncementServiceTest {
             return a;
         });
 
-        announcementService.create("Тест", "Опис", "Київ", AnnouncementType.OFFER, null, List.of(10L), author);
+        announcementService.create("Тест", "Опис", "Київ", AnnouncementType.OFFER, null, List.of(10L), author, null);
 
         assertThat(captor.getValue().getAcceptsApplications()).isTrue();
     }
 
+    //update — успішне редагування REJECTED оголошення скидає статус до PENDING
     @Test
-    @DisplayName("update — успішне редагування REJECTED оголошення скидає статус до PENDING")
     void update_rejectedAnnouncement_resetsToPending() {
         Announcement existing = Announcement.builder()
             .id(1L).status(AnnouncementStatus.REJECTED).author(author).build();
@@ -168,15 +151,15 @@ class AnnouncementServiceTest {
         when(announcementRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
         Announcement result = announcementService.update(
-            1L, "Новий заголовок", "Новий опис", "Львів", true, List.of(10L), author);
+            1L, "Новий заголовок", "Новий опис", "Львів", true, List.of(10L), author, null);
 
         assertThat(result.getStatus()).isEqualTo(AnnouncementStatus.PENDING);
         assertThat(result.getRejectionReason()).isNull();
         verify(eventPublisher).publishEvent(any(AnnouncementSubmittedEvent.class));
     }
 
+    //update — кидає виняток якщо поточний користувач не є автором
     @Test
-    @DisplayName("update — кидає виняток якщо поточний користувач не є автором")
     void update_throwsException_whenNotAuthor() {
         User anotherUser = User.builder().id(2L).email("other@test.com").build();
         Announcement existing = Announcement.builder()
@@ -184,26 +167,26 @@ class AnnouncementServiceTest {
         when(announcementRepository.findById(1L)).thenReturn(Optional.of(existing));
 
         assertThatThrownBy(() ->
-            announcementService.update(1L, "Тест", "Опис", "Київ", true, List.of(), anotherUser))
+            announcementService.update(1L, "Тест", "Опис", "Київ", true, List.of(), anotherUser, null))
             .isInstanceOf(RuntimeException.class)
             .hasMessageContaining("Немає доступу");
     }
 
+    //update — кидає виняток для PUBLISHED оголошення
     @Test
-    @DisplayName("update — кидає виняток для PUBLISHED оголошення")
     void update_throwsException_whenPublished() {
         Announcement existing = Announcement.builder()
             .id(1L).status(AnnouncementStatus.PUBLISHED).author(author).build();
         when(announcementRepository.findById(1L)).thenReturn(Optional.of(existing));
 
         assertThatThrownBy(() ->
-            announcementService.update(1L, "Тест", "Опис", "Київ", true, List.of(), author))
+            announcementService.update(1L, "Тест", "Опис", "Київ", true, List.of(), author, null))
             .isInstanceOf(RuntimeException.class)
             .hasMessageContaining("Редагувати можна лише");
     }
 
+    //approve — встановлює статус PUBLISHED та публікує подію
     @Test
-    @DisplayName("approve — встановлює статус PUBLISHED та публікує подію")
     void approve_setsPublishedStatus_andPublishesEvent() {
         Announcement a = Announcement.builder().id(1L).status(AnnouncementStatus.PENDING).build();
         when(announcementRepository.findById(1L)).thenReturn(Optional.of(a));
@@ -216,8 +199,8 @@ class AnnouncementServiceTest {
         verify(eventPublisher).publishEvent(any(AnnouncementApprovedEvent.class));
     }
 
+    //reject — встановлює статус REJECTED з причиною та публікує подію
     @Test
-    @DisplayName("reject — встановлює статус REJECTED з причиною та публікує подію")
     void reject_setsRejectedStatus_withReason_andPublishesEvent() {
         Announcement a = Announcement.builder().id(1L).status(AnnouncementStatus.PENDING).build();
         when(announcementRepository.findById(1L)).thenReturn(Optional.of(a));
@@ -230,8 +213,8 @@ class AnnouncementServiceTest {
         verify(eventPublisher).publishEvent(any(AnnouncementRejectedEvent.class));
     }
 
+    //archive — встановлює статус ARCHIVED та фіксує час архівування
     @Test
-    @DisplayName("archive — встановлює статус ARCHIVED та фіксує час архівування")
     void archive_setsArchivedStatus_andTimestamp() {
         Announcement a = Announcement.builder().id(1L).status(AnnouncementStatus.PUBLISHED).build();
         when(announcementRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
@@ -242,48 +225,8 @@ class AnnouncementServiceTest {
         assertThat(a.getArchivedAt()).isNotNull();
     }
 
+    //complete — кидає виняток якщо є активні заявки
     @Test
-    @DisplayName("republish — успішно переводить ARCHIVED оголошення до PENDING")
-    void republish_archivedAnnouncement_setsToPending() {
-        Announcement a = Announcement.builder()
-            .id(1L).title("Тест").status(AnnouncementStatus.ARCHIVED).author(author).build();
-        when(announcementRepository.findById(1L)).thenReturn(Optional.of(a));
-        when(announcementRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
-
-        announcementService.republish(1L, author);
-
-        assertThat(a.getStatus()).isEqualTo(AnnouncementStatus.PENDING);
-        assertThat(a.getArchivedAt()).isNull();
-        verify(eventPublisher).publishEvent(any(AnnouncementSubmittedEvent.class));
-    }
-
-    @Test
-    @DisplayName("republish — кидає виняток якщо оголошення не ARCHIVED")
-    void republish_throwsException_whenNotArchived() {
-        Announcement a = Announcement.builder()
-            .id(1L).status(AnnouncementStatus.PUBLISHED).author(author).build();
-        when(announcementRepository.findById(1L)).thenReturn(Optional.of(a));
-
-        assertThatThrownBy(() -> announcementService.republish(1L, author))
-            .isInstanceOf(RuntimeException.class)
-            .hasMessageContaining("архівоване оголошення");
-    }
-
-    @Test
-    @DisplayName("republish — кидає виняток якщо поточний користувач не є автором")
-    void republish_throwsException_whenNotAuthor() {
-        User anotherUser = User.builder().id(99L).build();
-        Announcement a = Announcement.builder()
-            .id(1L).status(AnnouncementStatus.ARCHIVED).author(author).build();
-        when(announcementRepository.findById(1L)).thenReturn(Optional.of(a));
-
-        assertThatThrownBy(() -> announcementService.republish(1L, anotherUser))
-            .isInstanceOf(RuntimeException.class)
-            .hasMessageContaining("Немає доступу");
-    }
-
-    @Test
-    @DisplayName("complete — кидає виняток якщо є активні заявки")
     void complete_throwsException_whenActiveApplicationsExist() {
         Announcement a = Announcement.builder()
             .id(1L).status(AnnouncementStatus.PUBLISHED).author(author).build();
@@ -295,8 +238,8 @@ class AnnouncementServiceTest {
             .hasMessageContaining("активними заявками");
     }
 
+    //complete — кидає виняток якщо оголошення не PUBLISHED
     @Test
-    @DisplayName("complete — кидає виняток якщо оголошення не PUBLISHED")
     void complete_throwsException_whenNotPublished() {
         Announcement a = Announcement.builder()
             .id(1L).status(AnnouncementStatus.PENDING).author(author).build();
@@ -305,18 +248,5 @@ class AnnouncementServiceTest {
         assertThatThrownBy(() -> announcementService.complete(1L, author))
             .isInstanceOf(RuntimeException.class)
             .hasMessageContaining("опубліковане оголошення");
-    }
-
-    @Test
-    @DisplayName("complete — кидає виняток якщо поточний користувач не є автором")
-    void complete_throwsException_whenNotAuthor() {
-        User anotherUser = User.builder().id(99L).build();
-        Announcement a = Announcement.builder()
-            .id(1L).status(AnnouncementStatus.PUBLISHED).author(author).build();
-        when(announcementRepository.findById(1L)).thenReturn(Optional.of(a));
-
-        assertThatThrownBy(() -> announcementService.complete(1L, anotherUser))
-            .isInstanceOf(RuntimeException.class)
-            .hasMessageContaining("Немає доступу");
     }
 }

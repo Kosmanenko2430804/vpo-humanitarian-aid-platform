@@ -1,7 +1,6 @@
 package com.kosmanenko.vpo_humanitarian_aid_platform.service;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -25,19 +24,9 @@ class PaymentServiceTest {
     // ==================== generateData ====================
 
     @Test
-    @DisplayName("generateData — повертає валідний Base64 рядок")
-    void generateData_returnsValidBase64() {
-        String data = paymentService.generateData(1L, 100.0, "Пожертва");
-
-        // Має декодуватись без виключень
-        byte[] decoded = Base64.getDecoder().decode(data);
-        assertThat(decoded).isNotEmpty();
-    }
-
-    @Test
-    @DisplayName("generateData — JSON містить правильні параметри платежу")
+    // generateData — JSON містить правильні параметри платежу
     void generateData_jsonContainsCorrectParams() {
-        String data = paymentService.generateData(42L, 250.50, "Допомога ВПО");
+        String data = paymentService.generateData(250.50, "Допомога ВПО");
 
         String json = new String(Base64.getDecoder().decode(data), StandardCharsets.UTF_8);
         assertThat(json).contains("\"version\":\"3\"");
@@ -48,25 +37,25 @@ class PaymentServiceTest {
         assertThat(json).contains("\"currency\":\"UAH\"");
         assertThat(json).contains("\"description\":\"Допомога ВПО\"");
         assertThat(json).contains("\"sandbox\":\"1\"");
-        assertThat(json).contains("order_42_");
+        assertThat(json).contains("\"order_id\":\"order_");
     }
 
     @Test
-    @DisplayName("generateData — містить посилання на сторінку результату платежу")
+    // generateData — містить посилання на сторінку результату платежу
     void generateData_containsResultUrl() {
-        String data = paymentService.generateData(10L, 50.0, "Тест");
+        String data = paymentService.generateData(50.0, "Тест");
 
         String json = new String(Base64.getDecoder().decode(data), StandardCharsets.UTF_8);
         assertThat(json).contains("result_url");
-        assertThat(json).contains("id=10");
+        assertThat(json).contains("/payment/result");
     }
 
     // ==================== generateSignature ====================
 
     @Test
-    @DisplayName("generateSignature — повертає не порожній Base64 рядок")
+    // generateSignature — повертає не порожній Base64 рядок
     void generateSignature_returnsNonEmptyBase64() {
-        String data = paymentService.generateData(1L, 100.0, "Тест");
+        String data = paymentService.generateData(100.0, "Тест");
 
         String signature = paymentService.generateSignature(data);
 

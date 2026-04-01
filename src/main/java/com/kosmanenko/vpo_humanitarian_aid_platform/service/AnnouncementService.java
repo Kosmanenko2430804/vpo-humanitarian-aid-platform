@@ -168,6 +168,23 @@ public class AnnouncementService {
     }
 
     @Transactional
+    public void republish(Long id, User currentUser) {
+        Announcement a = announcementRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Оголошення не знайдено"));
+        if (!a.getAuthor().getId().equals(currentUser.getId())) {
+            throw new RuntimeException("Немає доступу");
+        }
+        if (a.getStatus() != AnnouncementStatus.ARCHIVED) {
+            throw new RuntimeException("Можна повторно опублікувати лише архівоване оголошення");
+        }
+        a.setStatus(AnnouncementStatus.PENDING);
+        a.setArchivedAt(null);
+        Announcement saved = announcementRepository.save(a);
+        eventPublisher.publishEvent(new AnnouncementSubmittedEvent(saved,
+            "Ваше оголошення \"" + a.getTitle() + "\" надіслано на повторну модерацію."));
+    }
+
+    @Transactional
     public void archive(Announcement announcement) {
         announcement.setStatus(AnnouncementStatus.ARCHIVED);
         announcement.setArchivedAt(LocalDateTime.now());
