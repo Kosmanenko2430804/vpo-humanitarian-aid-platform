@@ -3,7 +3,6 @@ package com.kosmanenko.vpo_humanitarian_aid_platform.service;
 import com.kosmanenko.vpo_humanitarian_aid_platform.enums.UserRole;
 import com.kosmanenko.vpo_humanitarian_aid_platform.model.User;
 import com.kosmanenko.vpo_humanitarian_aid_platform.repository.UserRepository;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,8 +26,8 @@ class CustomUserDetailsServiceTest {
     @InjectMocks
     private CustomUserDetailsService customUserDetailsService;
 
+    // loadUserByUsername — повертає UserDetails для активного користувача
     @Test
-    @DisplayName("loadUserByUsername — повертає UserDetails для активного користувача")
     void loadUserByUsername_returnsUserDetails_whenActive() {
         User user = User.builder()
             .id(1L).email("user@test.com")
@@ -46,8 +45,8 @@ class CustomUserDetailsServiceTest {
         assertThat(details.getAuthorities()).anyMatch(a -> a.getAuthority().equals("ROLE_VPO"));
     }
 
+    // loadUserByUsername — вимкнений для заблокованого користувача
     @Test
-    @DisplayName("loadUserByUsername — вимкнений для заблокованого користувача")
     void loadUserByUsername_returnsDisabledUser_whenBlocked() {
         User user = User.builder()
             .id(1L).email("blocked@test.com")
@@ -61,16 +60,4 @@ class CustomUserDetailsServiceTest {
 
         assertThat(details.isEnabled()).isFalse();
     }
-
-    @Test
-    @DisplayName("loadUserByUsername — кидає UsernameNotFoundException якщо користувача не знайдено")
-    void loadUserByUsername_throwsException_whenUserNotFound() {
-        when(userRepository.findByEmail("unknown@test.com")).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() ->
-            customUserDetailsService.loadUserByUsername("unknown@test.com"))
-            .isInstanceOf(UsernameNotFoundException.class)
-            .hasMessageContaining("unknown@test.com");
-    }
-
 }

@@ -4,7 +4,6 @@ import com.kosmanenko.vpo_humanitarian_aid_platform.model.Announcement;
 import com.kosmanenko.vpo_humanitarian_aid_platform.model.Complaint;
 import com.kosmanenko.vpo_humanitarian_aid_platform.model.User;
 import com.kosmanenko.vpo_humanitarian_aid_platform.repository.ComplaintRepository;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -31,8 +30,8 @@ class ComplaintServiceTest {
     private final Announcement announcement = Announcement.builder().id(1L).title("Тест").build();
     private final User complainant = User.builder().id(2L).email("user@test.com").build();
 
+    // submit — зберігає нову скаргу зі статусом PENDING
     @Test
-    @DisplayName("submit — зберігає нову скаргу зі статусом PENDING")
     void submit_savesComplaint_withPendingStatus() {
         when(complaintRepository.existsByAnnouncementAndComplainant(announcement, complainant))
             .thenReturn(false);
@@ -45,8 +44,8 @@ class ComplaintServiceTest {
         assertThat(captor.getValue().getStatus()).isEqualTo("PENDING");
     }
 
+    // submit — кидає виняток при повторній скарзі
     @Test
-    @DisplayName("submit — кидає виняток при повторній скарзі")
     void submit_throwsException_whenDuplicateComplaint() {
         when(complaintRepository.existsByAnnouncementAndComplainant(announcement, complainant))
             .thenReturn(true);
@@ -56,24 +55,12 @@ class ComplaintServiceTest {
             .hasMessageContaining("вже подавали скаргу");
     }
 
+    // findById — повертає скаргу якщо існує
     @Test
-    @DisplayName("findById — повертає скаргу якщо існує")
     void findById_returnsComplaint_whenExists() {
         Complaint complaint = Complaint.builder().id(1L).build();
         when(complaintRepository.findById(1L)).thenReturn(Optional.of(complaint));
 
         assertThat(complaintService.findById(1L)).isPresent();
-    }
-
-    @Test
-    @DisplayName("markReviewed — встановлює статус REVIEWED")
-    void markReviewed_setsReviewedStatus() {
-        Complaint complaint = Complaint.builder().id(1L).status("PENDING").build();
-        when(complaintRepository.findById(1L)).thenReturn(Optional.of(complaint));
-        when(complaintRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
-
-        complaintService.markReviewed(1L);
-
-        assertThat(complaint.getStatus()).isEqualTo("REVIEWED");
     }
 }

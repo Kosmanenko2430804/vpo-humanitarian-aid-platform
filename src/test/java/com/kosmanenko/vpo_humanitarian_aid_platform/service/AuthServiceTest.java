@@ -4,7 +4,6 @@ import com.kosmanenko.vpo_humanitarian_aid_platform.enums.ProviderType;
 import com.kosmanenko.vpo_humanitarian_aid_platform.enums.UserRole;
 import com.kosmanenko.vpo_humanitarian_aid_platform.model.User;
 import com.kosmanenko.vpo_humanitarian_aid_platform.repository.UserRepository;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -30,24 +29,24 @@ class AuthServiceTest {
     @InjectMocks
     private AuthService authService;
 
+    // emailExists — повертає true якщо email вже зареєстровано
     @Test
-    @DisplayName("emailExists — повертає true якщо email вже зареєстровано")
     void emailExists_returnsTrue_whenEmailRegistered() {
         when(userRepository.existsByEmail("exist@test.com")).thenReturn(true);
 
         assertThat(authService.emailExists("exist@test.com")).isTrue();
     }
 
+    // emailExists — повертає false якщо email не зареєстровано
     @Test
-    @DisplayName("emailExists — повертає false якщо email не зареєстровано")
     void emailExists_returnsFalse_whenEmailNotRegistered() {
         when(userRepository.existsByEmail("new@test.com")).thenReturn(false);
 
         assertThat(authService.emailExists("new@test.com")).isFalse();
     }
 
+    // register — зберігає користувача з хешованим паролем та роллю VPO
     @Test
-    @DisplayName("register — зберігає користувача з хешованим паролем та роллю VPO")
     void register_savesUser_withHashedPassword_andVpoRole() {
         when(passwordEncoder.encode("rawPass")).thenReturn("hashedPass");
         ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
@@ -66,8 +65,8 @@ class AuthServiceTest {
         assertThat(saved.getRatingCount()).isEqualTo(0);
     }
 
+    // register — встановлює providerType тільки для ролі PROVIDER
     @Test
-    @DisplayName("register — встановлює providerType тільки для ролі PROVIDER")
     void register_setsProviderType_onlyForProviderRole() {
         when(passwordEncoder.encode(anyString())).thenReturn("hash");
         ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
@@ -82,14 +81,14 @@ class AuthServiceTest {
         assertThat(saved.getOrgName()).isEqualTo("БФ Надія");
     }
 
+    // registerOAuth — зберігає користувача без пароля з oauthProvider та oauthId
     @Test
-    @DisplayName("registerOAuth — зберігає користувача без пароля з oauthProvider та oauthId")
     void registerOAuth_savesUser_withOauthDetails() {
         ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
         when(userRepository.save(captor.capture())).thenAnswer(inv -> inv.getArgument(0));
 
         authService.registerOAuth("google@test.com", "Тарас Шевченко",
-                "google", "google-id-123", UserRole.VPO, null);
+                "google", "google-id-123", UserRole.VPO, null, null, null);
 
         User saved = captor.getValue();
         assertThat(saved.getEmail()).isEqualTo("google@test.com");
@@ -99,5 +98,4 @@ class AuthServiceTest {
         assertThat(saved.getProviderType()).isNull();
         assertThat(saved.getIsBlocked()).isFalse();
     }
-
 }

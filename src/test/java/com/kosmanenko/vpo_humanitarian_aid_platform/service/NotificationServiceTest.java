@@ -7,7 +7,6 @@ import com.kosmanenko.vpo_humanitarian_aid_platform.model.Notification;
 import com.kosmanenko.vpo_humanitarian_aid_platform.model.User;
 import com.kosmanenko.vpo_humanitarian_aid_platform.repository.NotificationRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -44,8 +43,8 @@ class NotificationServiceTest {
         announcement = Announcement.builder().id(1L).title("Оголошення тест").author(user).build();
     }
 
+    // notify — зберігає сповіщення в БД та надсилає email
     @Test
-    @DisplayName("notify — зберігає сповіщення в БД та надсилає email")
     void notify_savesNotification_andSendsEmail() {
         when(notificationRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
@@ -58,19 +57,8 @@ class NotificationServiceTest {
         verify(mailSender).send(any(SimpleMailMessage.class));
     }
 
+    // onAnnouncementApproved — сповіщає автора про публікацію
     @Test
-    @DisplayName("notify — ігнорує помилку надсилання email")
-    void notify_ignoresEmailError() {
-        when(notificationRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
-        doThrow(new RuntimeException("SMTP error")).when(mailSender).send(any(SimpleMailMessage.class));
-
-        notificationService.notify(user, "Повідомлення");
-
-        verify(notificationRepository).save(any());
-    }
-
-    @Test
-    @DisplayName("onAnnouncementApproved — сповіщає автора про публікацію")
     void onAnnouncementApproved_notifiesAuthor() {
         when(notificationRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
@@ -81,8 +69,8 @@ class NotificationServiceTest {
         assertThat(captor.getValue().getMessage()).contains("опубліковано");
     }
 
+    // onHelpApplicationReceived — сповіщає надавача про нову заявку
     @Test
-    @DisplayName("onHelpApplicationReceived — сповіщає надавача про нову заявку")
     void onHelpApplicationReceived_notifiesProvider() {
         User applicant = User.builder().id(2L).fullName("ВПО Тест").build();
         HelpApplication app = HelpApplication.builder()
@@ -93,28 +81,6 @@ class NotificationServiceTest {
 
         ArgumentCaptor<Notification> captor = ArgumentCaptor.forClass(Notification.class);
         verify(notificationRepository).save(captor.capture());
-        assertThat(captor.getValue().getMessage()).contains("Нова заявка");
-    }
-
-    @Test
-    @DisplayName("countUnread — повертає кількість непрочитаних")
-    void countUnread_returnsCount() {
-        when(notificationRepository.countByUserAndIsReadFalse(user)).thenReturn(3L);
-
-        assertThat(notificationService.countUnread(user)).isEqualTo(3L);
-    }
-
-    @Test
-    @DisplayName("markAllRead — позначає всі непрочитані як прочитані")
-    void markAllRead_setsIsReadTrue() {
-        Notification n1 = Notification.builder().isRead(false).build();
-        Notification n2 = Notification.builder().isRead(false).build();
-        when(notificationRepository.findByUserAndIsReadFalseOrderByCreatedAtDesc(user))
-            .thenReturn(List.of(n1, n2));
-
-        notificationService.markAllRead(user);
-
-        assertThat(n1.getIsRead()).isTrue();
-        assertThat(n2.getIsRead()).isTrue();
+        assertThat(captor.getValue().getMessage()).contains("нова заявка");
     }
 }

@@ -3,7 +3,6 @@ package com.kosmanenko.vpo_humanitarian_aid_platform.service;
 import com.kosmanenko.vpo_humanitarian_aid_platform.enums.AnnouncementStatus;
 import com.kosmanenko.vpo_humanitarian_aid_platform.model.Announcement;
 import com.kosmanenko.vpo_humanitarian_aid_platform.repository.AnnouncementRepository;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,8 +28,8 @@ class AnnouncementArchivingSchedulerTest {
     @InjectMocks
     private AnnouncementArchivingScheduler scheduler;
 
+    // archiveOldAnnouncements — архівує оголошення старше 30 днів
     @Test
-    @DisplayName("archiveOldAnnouncements — архівує оголошення старше 30 днів")
     void archiveOldAnnouncements_archivesEligibleAnnouncements() {
         Announcement old1 = Announcement.builder().id(1L)
             .status(AnnouncementStatus.PUBLISHED)
@@ -51,8 +50,8 @@ class AnnouncementArchivingSchedulerTest {
         verify(announcementService).archive(old2);
     }
 
+    // archiveOldAnnouncements — не викликає archive якщо немає кандидатів
     @Test
-    @DisplayName("archiveOldAnnouncements — не викликає archive якщо немає кандидатів")
     void archiveOldAnnouncements_doesNothing_whenNoEligibleAnnouncements() {
         when(announcementRepository.findByStatusAndPublishedAtBeforeAndArchivedAtIsNull(
             any(), any())).thenReturn(List.of());
