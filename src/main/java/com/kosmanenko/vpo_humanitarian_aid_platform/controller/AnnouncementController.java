@@ -6,7 +6,6 @@ import com.kosmanenko.vpo_humanitarian_aid_platform.model.Announcement;
 import com.kosmanenko.vpo_humanitarian_aid_platform.model.User;
 import com.kosmanenko.vpo_humanitarian_aid_platform.repository.CategoryRepository;
 import com.kosmanenko.vpo_humanitarian_aid_platform.service.AnnouncementService;
-import com.kosmanenko.vpo_humanitarian_aid_platform.service.ComplaintService;
 import com.kosmanenko.vpo_humanitarian_aid_platform.service.HelpApplicationService;
 import com.kosmanenko.vpo_humanitarian_aid_platform.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +26,6 @@ public class AnnouncementController {
 
     private final AnnouncementService announcementService;
     private final HelpApplicationService helpApplicationService;
-    private final ComplaintService complaintService;
     private final CategoryRepository categoryRepository;
     private final UserService userService;
 
@@ -161,19 +159,4 @@ public class AnnouncementController {
     }
 
 
-    @PostMapping("/{id}/complaint")
-    public String submitComplaint(@PathVariable Long id,
-                                  @RequestParam String reason,
-                                  @AuthenticationPrincipal UserDetails userDetails,
-                                  RedirectAttributes redirectAttributes) {
-        User user = userService.findByEmail(userDetails.getUsername()).orElseThrow();
-        Announcement announcement = announcementService.findById(id).orElseThrow();
-        try {
-            complaintService.submit(announcement, user, reason);
-            redirectAttributes.addFlashAttribute("success", "Скаргу надіслано");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
-        }
-        return "redirect:/announcements/" + id;
-    }
 }

@@ -50,12 +50,6 @@ public class Announcement {
     @Column(name = "accepts_applications")
     private Boolean acceptsApplications = true;
 
-    @Column(name = "published_at")
-    private LocalDateTime publishedAt;
-
-    @Column(name = "archived_at")
-    private LocalDateTime archivedAt;
-
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 

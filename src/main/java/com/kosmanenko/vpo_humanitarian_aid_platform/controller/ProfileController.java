@@ -51,7 +51,6 @@ public class ProfileController {
                               @RequestParam String city,
                               @RequestParam(required = false) String orgName,
                               @RequestParam(required = false) String orgDescription,
-                              @RequestParam(required = false) String orgLogoUrl,
                               @RequestParam(required = false) Boolean isProfilePublic,
                               @RequestParam(required = false) List<Long> providerCategoryIds,
                               @AuthenticationPrincipal UserDetails userDetails,
@@ -62,7 +61,6 @@ public class ProfileController {
         user.setCity(city);
         user.setOrgName(orgName);
         user.setOrgDescription(orgDescription);
-        user.setOrgLogoUrl(orgLogoUrl);
         user.setIsProfilePublic(Boolean.TRUE.equals(isProfilePublic));
 
         if (providerCategoryIds != null) {

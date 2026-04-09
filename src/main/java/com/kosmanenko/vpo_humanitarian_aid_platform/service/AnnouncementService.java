@@ -21,7 +21,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -153,7 +152,6 @@ public class AnnouncementService {
     public void approve(Long id) {
         Announcement a = announcementRepository.findById(id).orElseThrow();
         a.setStatus(AnnouncementStatus.PUBLISHED);
-        a.setPublishedAt(LocalDateTime.now());
         announcementRepository.save(a);
         eventPublisher.publishEvent(new AnnouncementApprovedEvent(a));
     }
@@ -165,30 +163,6 @@ public class AnnouncementService {
         a.setRejectionReason(reason);
         announcementRepository.save(a);
         eventPublisher.publishEvent(new AnnouncementRejectedEvent(a, reason));
-    }
-
-    @Transactional
-    public void republish(Long id, User currentUser) {
-        Announcement a = announcementRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Оголошення не знайдено"));
-        if (!a.getAuthor().getId().equals(currentUser.getId())) {
-            throw new RuntimeException("Немає доступу");
-        }
-        if (a.getStatus() != AnnouncementStatus.ARCHIVED) {
-            throw new RuntimeException("Можна повторно опублікувати лише архівоване оголошення");
-        }
-        a.setStatus(AnnouncementStatus.PENDING);
-        a.setArchivedAt(null);
-        Announcement saved = announcementRepository.save(a);
-        eventPublisher.publishEvent(new AnnouncementSubmittedEvent(saved,
-            "Ваше оголошення \"" + a.getTitle() + "\" надіслано на повторну модерацію."));
-    }
-
-    @Transactional
-    public void archive(Announcement announcement) {
-        announcement.setStatus(AnnouncementStatus.ARCHIVED);
-        announcement.setArchivedAt(LocalDateTime.now());
-        announcementRepository.save(announcement);
     }
 
     @Transactional

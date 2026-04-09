@@ -35,28 +35,23 @@ public class AuthService {
             .orgName(orgName)
             .isBlocked(false)
             .isProfilePublic(false)
-            .ratingCount(0)
             .build();
         return userRepository.save(user);
     }
 
     @Transactional
     public User registerOAuth(String email, String fullName,
-                              String oauthProvider, String oauthId,
                               UserRole role, ProviderType providerType,
                               String phone, String city) {
         User user = User.builder()
             .email(email)
             .fullName(fullName)
-            .oauthProvider(oauthProvider)
-            .oauthId(oauthId)
             .role(role)
             .providerType(role == UserRole.PROVIDER ? providerType : null)
             .phone(phone)
             .city(city)
             .isBlocked(false)
             .isProfilePublic(false)
-            .ratingCount(0)
             .build();
         return userRepository.save(user);
     }

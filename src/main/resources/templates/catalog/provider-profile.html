@@ -19,11 +19,6 @@
                     <p th:if="${provider.phone != null}" class="text-muted small mb-1">
                         <i class="bi bi-telephone me-1"></i><span th:text="${provider.phone}"></span>
                     </p>
-                    <div th:if="${provider.rating != null}" class="mb-3">
-                        <i class="bi bi-star-fill text-warning fs-5"></i>
-                        <span class="fs-5 fw-bold" th:text="${provider.rating}"></span>
-                        <small class="text-muted">(<span th:text="${provider.ratingCount}"></span> відгуків)</small>
-                    </div>
                     <p th:if="${provider.orgDescription}" class="text-muted small" th:text="${provider.orgDescription}"></p>
                     <div class="d-flex flex-wrap gap-1 justify-content-center">
                         <span th:each="cat : ${provider.providerCategories}"

@@ -10,14 +10,11 @@ import com.kosmanenko.vpo_humanitarian_aid_platform.model.Announcement;
 import com.kosmanenko.vpo_humanitarian_aid_platform.model.HelpApplication;
 import com.kosmanenko.vpo_humanitarian_aid_platform.model.User;
 import com.kosmanenko.vpo_humanitarian_aid_platform.repository.HelpApplicationRepository;
-import com.kosmanenko.vpo_humanitarian_aid_platform.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -28,7 +25,6 @@ public class HelpApplicationService {
 
     private final HelpApplicationRepository helpApplicationRepository;
     private final ApplicationEventPublisher eventPublisher;
-    private final UserRepository userRepository;
 
     public Optional<HelpApplication> findById(Long id) {
         return helpApplicationRepository.findById(id);
@@ -112,40 +108,6 @@ public class HelpApplicationService {
         app.setStatus(ApplicationStatus.COMPLETED);
         helpApplicationRepository.save(app);
         eventPublisher.publishEvent(new HelpApplicationCompletedEvent(app));
-    }
-
-    @Transactional
-    public void leaveReview(Long applicationId, int rating, String review, User applicant) {
-        HelpApplication app = helpApplicationRepository.findById(applicationId).orElseThrow();
-        if (!app.getApplicant().getId().equals(applicant.getId())) {
-            throw new RuntimeException("Немає доступу");
-        }
-        if (app.getStatus() != ApplicationStatus.COMPLETED) {
-            throw new RuntimeException("Можна залишити відгук тільки для завершених заявок");
-        }
-        if (rating < 1 || rating > 5) {
-            throw new RuntimeException("Рейтинг має бути від 1 до 5");
-        }
-        if (app.getRating() != null) {
-            throw new RuntimeException("Відгук вже залишено");
-        }
-
-        app.setRating(rating);
-        app.setReview(review);
-        helpApplicationRepository.save(app);
-
-        User provider = app.getAnnouncement().getAuthor();
-        updateProviderRating(provider);
-    }
-
-    private void updateProviderRating(User provider) {
-        List<HelpApplication> allApps = helpApplicationRepository.findRatedApplicationsByProvider(provider);
-        if (!allApps.isEmpty()) {
-            double avg = allApps.stream().mapToInt(HelpApplication::getRating).average().orElse(0);
-            provider.setRating(BigDecimal.valueOf(avg).setScale(2, RoundingMode.HALF_UP));
-            provider.setRatingCount(allApps.size());
-            userRepository.save(provider);
-        }
     }
 
     private void validateProviderAccess(HelpApplication app, User provider) {

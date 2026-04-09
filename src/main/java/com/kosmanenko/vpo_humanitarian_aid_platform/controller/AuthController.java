@@ -95,8 +95,6 @@ public class AuthController {
 
         String email = (String) session.getAttribute("oauth_email");
         String name = (String) session.getAttribute("oauth_name");
-        String oauthId = (String) session.getAttribute("oauth_id");
-        String oauthProvider = (String) session.getAttribute("oauth_provider");
 
         if (email == null) {
             return "redirect:/auth/login";
@@ -106,11 +104,9 @@ public class AuthController {
             UserRole userRole = UserRole.valueOf(role);
             ProviderType pType = (providerType != null && !providerType.isBlank())
                 ? ProviderType.valueOf(providerType) : null;
-            authService.registerOAuth(email, name, oauthProvider, oauthId, userRole, pType, phone, city);
+            authService.registerOAuth(email, name, userRole, pType, phone, city);
             session.removeAttribute("oauth_email");
             session.removeAttribute("oauth_name");
-            session.removeAttribute("oauth_id");
-            session.removeAttribute("oauth_provider");
 
             // Re-authenticate as UserDetails so @AuthenticationPrincipal works in controllers
             UserDetails userDetails = userDetailsService.loadUserByUsername(email);

@@ -46,11 +46,6 @@ public class HelpApplication {
     @Column(name = "provider_phone")
     private String providerPhone;
 
-    private Integer rating;
-
-    @Column(columnDefinition = "TEXT")
-    private String review;
-
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 

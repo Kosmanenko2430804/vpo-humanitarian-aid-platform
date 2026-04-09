@@ -64,7 +64,7 @@ public class SecurityConfig {
                         "/auth/**", "/css/**", "/js/**", "/images/**", "/payment/**",
                         "/error", "/fragments/**", "/oauth2/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/cabinet/**", "/applications/**", "/complaints/**").authenticated()
+                .requestMatchers("/cabinet/**", "/applications/**").authenticated()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form

@@ -16,14 +16,6 @@
                           th:text="${pendingCount}"></span>
                 </a>
             </li>
-            <li th:classappend="${requestURI == '/admin/complaints'} ? 'active-item'" class="list-group-item">
-                <a href="/admin/complaints" class="text-decoration-none text-dark">
-                    Скарги
-                    <span th:if="${complaintsCount != null and complaintsCount > 0}"
-                          class="badge bg-danger rounded-pill float-end"
-                          th:text="${complaintsCount}"></span>
-                </a>
-            </li>
             <li th:classappend="${requestURI == '/admin/users'} ? 'active-item'" class="list-group-item">
                 <a href="/admin/users" class="text-decoration-none text-dark">Користувачі</a>
             </li>

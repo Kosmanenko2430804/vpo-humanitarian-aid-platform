@@ -92,19 +92,4 @@ public class ApplicationController {
         return "redirect:/cabinet/applications";
     }
 
-    @PostMapping("/{id}/review")
-    public String review(@PathVariable Long id,
-                         @RequestParam int rating,
-                         @RequestParam(required = false) String review,
-                         @AuthenticationPrincipal UserDetails userDetails,
-                         RedirectAttributes redirectAttributes) {
-        User user = userService.findByEmail(userDetails.getUsername()).orElseThrow();
-        try {
-            helpApplicationService.leaveReview(id, rating, review, user);
-            redirectAttributes.addFlashAttribute("success", "Дякуємо за відгук!");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
-        }
-        return "redirect:/cabinet/applications";
-    }
 }
