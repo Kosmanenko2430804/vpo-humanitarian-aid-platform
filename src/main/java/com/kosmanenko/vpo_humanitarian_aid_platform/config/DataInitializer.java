@@ -69,7 +69,6 @@ public class DataInitializer implements ApplicationRunner {
                 .role(UserRole.ADMIN)
                 .isBlocked(false)
                 .isProfilePublic(false)
-                .ratingCount(0)
                 .build());
             log.info("Created admin user");
         }
@@ -83,7 +82,6 @@ public class DataInitializer implements ApplicationRunner {
                 .role(UserRole.VPO)
                 .isBlocked(false)
                 .isProfilePublic(false)
-                .ratingCount(0)
                 .build());
             log.info("Created VPO test user");
         }
@@ -101,7 +99,6 @@ public class DataInitializer implements ApplicationRunner {
                 .orgDescription("Благодійний фонд, що надає комплексну допомогу ВПО")
                 .isBlocked(false)
                 .isProfilePublic(true)
-                .ratingCount(0)
                 .providerCategories(foodCategory != null ? Set.of(foodCategory) : Set.of())
                 .build();
             userRepository.save(provider);

@@ -1,9 +1,6 @@
 package com.kosmanenko.vpo_humanitarian_aid_platform.controller;
 
-import com.kosmanenko.vpo_humanitarian_aid_platform.service.AnnouncementArchivingScheduler;
 import com.kosmanenko.vpo_humanitarian_aid_platform.service.AnnouncementService;
-import com.kosmanenko.vpo_humanitarian_aid_platform.service.ComplaintService;
-import com.kosmanenko.vpo_humanitarian_aid_platform.service.ModerationService;
 import com.kosmanenko.vpo_humanitarian_aid_platform.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -24,10 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class AdminController {
 
     private final AnnouncementService announcementService;
-    private final ModerationService moderationService;
-    private final ComplaintService complaintService;
     private final UserService userService;
-    private final AnnouncementArchivingScheduler archivingScheduler;
 
     @ModelAttribute
     public void populateSidebar(@AuthenticationPrincipal UserDetails userDetails, Model model) {
@@ -36,7 +30,6 @@ public class AdminController {
                     .ifPresent(u -> model.addAttribute("user", u));
         }
         model.addAttribute("pendingCount", announcementService.findPending().size());
-        model.addAttribute("complaintsCount", complaintService.findPending().size());
     }
 
     @GetMapping
@@ -77,26 +70,6 @@ public class AdminController {
                 .header(HttpHeaders.LOCATION, "/admin/moderation").build();
     }
 
-    @GetMapping("/complaints")
-    public String complaints(Model model) {
-        model.addAttribute("complaints", complaintService.findAll());
-        return "admin/complaints";
-    }
-
-    @PostMapping("/complaints/{id}/block")
-    public String blockAnnouncement(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        moderationService.blockAnnouncementFromComplaint(id);
-        redirectAttributes.addFlashAttribute("success", "Оголошення заблоковано");
-        return "redirect:/admin/complaints";
-    }
-
-    @PostMapping("/complaints/{id}/dismiss")
-    public String dismissComplaint(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        moderationService.dismissComplaint(id);
-        redirectAttributes.addFlashAttribute("success", "Скаргу відхилено");
-        return "redirect:/admin/complaints";
-    }
-
     @GetMapping("/users")
     public String users(Model model) {
         model.addAttribute("users", userService.findAll());
@@ -110,10 +83,4 @@ public class AdminController {
         return "redirect:/admin/users";
     }
 
-    @PostMapping("/run-archiving")
-    public String runArchiving(RedirectAttributes redirectAttributes) {
-        archivingScheduler.archiveOldAnnouncements();
-        redirectAttributes.addFlashAttribute("success", "Архівацію запущено вручну");
-        return "redirect:/admin/users";
-    }
 }

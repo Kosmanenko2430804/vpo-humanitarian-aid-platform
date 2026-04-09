@@ -33,7 +33,6 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
         String email = oAuth2User.getAttribute("email");
         String name = oAuth2User.getAttribute("name");
-        String oauthId = oAuth2User.getAttribute("sub");
 
         Optional<User> existingUser = userRepository.findByEmail(email);
 
@@ -47,12 +46,6 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
                 }
                 response.sendRedirect("/auth/login?blocked=true");
                 return;
-            }
-            // Update oauth info if not set
-            if (user.getOauthId() == null) {
-                user.setOauthProvider("google");
-                user.setOauthId(oauthId);
-                userRepository.save(user);
             }
             // Re-authenticate as UserDetails so @AuthenticationPrincipal UserDetails works in controllers
             UserDetails userDetails = userDetailsService.loadUserByUsername(email);
@@ -72,8 +65,6 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
             session.removeAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
             session.setAttribute("oauth_email", email);
             session.setAttribute("oauth_name", name);
-            session.setAttribute("oauth_id", oauthId);
-            session.setAttribute("oauth_provider", "google");
             response.sendRedirect("/auth/oauth2/complete");
         }
     }

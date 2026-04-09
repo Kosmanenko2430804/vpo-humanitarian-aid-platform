@@ -5,8 +5,6 @@ import com.kosmanenko.vpo_humanitarian_aid_platform.model.Announcement;
 import com.kosmanenko.vpo_humanitarian_aid_platform.model.HelpApplication;
 import com.kosmanenko.vpo_humanitarian_aid_platform.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -16,6 +14,4 @@ List<HelpApplication> findByAnnouncement(Announcement announcement);
     boolean existsByAnnouncementAndStatusIn(Announcement announcement, List<ApplicationStatus> statuses);
     List<HelpApplication> findByApplicantOrderByCreatedAtDesc(User applicant);
 
-    @Query("SELECT a FROM HelpApplication a WHERE a.announcement.author = :provider AND a.rating IS NOT NULL")
-    List<HelpApplication> findRatedApplicationsByProvider(@Param("provider") User provider);
 }

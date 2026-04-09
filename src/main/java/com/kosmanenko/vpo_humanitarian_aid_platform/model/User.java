@@ -6,8 +6,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.BatchSize;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -50,29 +48,11 @@ public class User {
     @Column(name = "org_description", columnDefinition = "TEXT")
     private String orgDescription;
 
-    @Column(name = "org_logo_url")
-    private String orgLogoUrl;
-
     @Column(name = "is_profile_public")
     private Boolean isProfilePublic = false;
 
     @Column(name = "is_blocked")
     private Boolean isBlocked = false;
-
-    @Column(name = "oauth_provider")
-    private String oauthProvider;
-
-    @Column(name = "oauth_id")
-    private String oauthId;
-
-    @Column(precision = 3, scale = 2)
-    private BigDecimal rating;
-
-    @Column(name = "rating_count")
-    private Integer ratingCount = 0;
-
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @BatchSize(size = 30)
@@ -83,8 +63,4 @@ public class User {
     )
     private Set<Category> providerCategories = new HashSet<>();
 
-    @PrePersist
-    public void prePersist() {
-        this.createdAt = LocalDateTime.now();
-    }
 }
