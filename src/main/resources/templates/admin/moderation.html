@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{layout/base :: layout(~{::title}, ~{::main})}"
+      th:replace="~{base :: layout(~{::title}, ~{::main})}"
       lang="uk">
 <head>
     <title>Модерація &mdash; Адмін</title>
@@ -33,19 +33,13 @@
                         </div>
                         <div class="col-md-5">
                             <div class="d-flex gap-2 justify-content-end">
-                                <form th:action="@{/admin/moderation/{id}/approve(id=${a.id})}" method="post"
-                                      th:attr="hx-post=@{/admin/moderation/{id}/approve(id=${a.id})}"
-                                      hx-target="closest .col-12"
-                                      hx-swap="outerHTML">
+                                <form th:action="@{/admin/moderation/{id}/approve(id=${a.id})}" method="post">
                                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                                     <button type="submit" class="btn btn-success btn-sm">Підтвердити</button>
                                 </form>
                                 <div class="d-flex gap-1">
                                     <form th:action="@{/admin/moderation/{id}/reject(id=${a.id})}" method="post"
-                                          class="d-flex gap-1"
-                                          th:attr="hx-post=@{/admin/moderation/{id}/reject(id=${a.id})}"
-                                          hx-target="closest .col-12"
-                                          hx-swap="outerHTML">
+                                          class="d-flex gap-1">
                                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                                         <input type="text" name="reason" class="form-control form-control-sm"
                                                required placeholder="Причина відхилення">

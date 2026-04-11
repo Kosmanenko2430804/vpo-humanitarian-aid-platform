@@ -4,8 +4,6 @@ import com.kosmanenko.vpo_humanitarian_aid_platform.enums.AnnouncementStatus;
 import com.kosmanenko.vpo_humanitarian_aid_platform.enums.AnnouncementType;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.BatchSize;
-
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -57,7 +55,6 @@ public class Announcement {
     private String donationUrl;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @BatchSize(size = 30)
     @JoinTable(
         name = "announcement_categories",
         joinColumns = @JoinColumn(name = "announcement_id"),

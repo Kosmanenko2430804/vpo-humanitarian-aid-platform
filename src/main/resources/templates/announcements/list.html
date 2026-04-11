@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{layout/base :: layout(~{::title}, ~{::main})}"
+      th:replace="~{base :: layout(~{::title}, ~{::main})}"
       lang="uk">
 <head>
     <title>Оголошення &mdash; ВПО Платформа</title>
@@ -16,11 +16,7 @@
     <!-- Filters -->
     <div class="card mb-4">
         <div class="card-body">
-            <form action="/announcements" method="get" class="row g-2"
-                  hx-get="/announcements"
-                  hx-target="#results-container"
-                  hx-select="#results-container"
-                  hx-push-url="true">
+            <form action="/announcements" method="get" class="row g-2">
                 <div class="col-md-3">
                     <input type="text" name="keyword" class="form-control" placeholder="Пошук..."
                            th:value="${currentKeyword}">

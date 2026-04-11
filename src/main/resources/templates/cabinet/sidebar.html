@@ -12,20 +12,20 @@
                            (${user.role.name() == 'PROVIDER'} ? (${user.providerType != null && user.providerType.name() == 'ORGANIZATION'} ? 'Організація' : 'Волонтер') : 'Адміністратор')"></span>
         </div>
         <ul class="list-group list-group-flush sidebar-nav">
-            <li th:classappend="${requestURI == '/cabinet/announcements'} ? 'active-item'" class="list-group-item">
+            <li class="list-group-item">
                 <a href="/cabinet/announcements" class="text-decoration-none text-dark">Мої оголошення</a>
             </li>
-            <li th:classappend="${requestURI == '/cabinet/applications'} ? 'active-item'" class="list-group-item">
+            <li class="list-group-item">
                 <a href="/cabinet/applications" class="text-decoration-none text-dark">Заявки</a>
             </li>
-            <li th:classappend="${requestURI == '/cabinet/notifications'} ? 'active-item'" class="list-group-item">
+            <li class="list-group-item">
                 <a href="/cabinet/notifications" class="text-decoration-none text-dark">
                     Сповіщення
                     <span th:if="${unreadCount > 0}" class="badge bg-danger rounded-pill"
                           th:text="${unreadCount}"></span>
                 </a>
             </li>
-            <li th:classappend="${requestURI == '/cabinet/profile'} ? 'active-item'" class="list-group-item">
+            <li class="list-group-item">
                 <a href="/cabinet/profile" class="text-decoration-none text-dark">Профіль</a>
             </li>
             <li class="list-group-item">

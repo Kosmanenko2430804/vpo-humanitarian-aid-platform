@@ -125,11 +125,6 @@ public class NotificationService {
     }
 
     @Transactional
-    public void notify(User user, String message) {
-        notify(user, message, "Сповіщення від платформи ВПО");
-    }
-
-    @Transactional
     public void notify(User user, String message, String subject) {
         Notification notification = Notification.builder()
             .user(user)
@@ -147,9 +142,9 @@ public class NotificationService {
             mail.setSubject(subject);
             mail.setText(text);
             mailSender.send(mail);
-            log.info("Email sent to={} subject={}", to, subject);
+            log.info("Лист надіслано на: {}", to);
         } catch (Exception e) {
-            log.error("Failed to send email to={}: {}", to, e.getMessage());
+            log.error("Помилка надсилання листа на {}: {}", to, e.getMessage());
         }
     }
 

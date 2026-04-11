@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      th:replace="~{layout/base :: layout(~{::title}, ~{::main})}"
+      th:replace="~{base :: layout(~{::title}, ~{::main})}"
       lang="uk">
 <head>
     <title th:text="${announcement != null} ? 'Редагувати оголошення' : 'Нове оголошення'">Оголошення</title>
@@ -16,25 +16,32 @@
                     <h3 class="fw-bold mb-4" th:text="${announcement != null} ? 'Редагувати оголошення' : 'Нове оголошення'"></h3>
 
                     <form th:action="${announcement != null} ? @{/announcements/{id}/edit(id=${announcement.id})} : @{/announcements/new}"
+                          th:object="${announcementForm}"
                           method="post">
                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 
                         <div class="mb-3">
                             <label class="form-label fw-bold">Заголовок *</label>
-                            <input type="text" name="title" class="form-control" required
-                                   th:value="${announcement?.title}" placeholder="Назва оголошення">
+                            <input type="text" th:field="*{title}"
+                                   th:classappend="${#fields.hasErrors('title')} ? 'is-invalid'"
+                                   class="form-control" placeholder="Назва оголошення">
+                            <div class="invalid-feedback" th:errors="*{title}"></div>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label fw-bold">Опис *</label>
-                            <textarea name="description" class="form-control" rows="5" required
-                                      placeholder="Детальний опис..." th:text="${announcement?.description}"></textarea>
+                            <textarea th:field="*{description}"
+                                      th:classappend="${#fields.hasErrors('description')} ? 'is-invalid'"
+                                      class="form-control" rows="5" placeholder="Детальний опис..."></textarea>
+                            <div class="invalid-feedback" th:errors="*{description}"></div>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label fw-bold">Місто *</label>
-                            <input type="text" name="city" class="form-control" required
-                                   th:value="${announcement?.city}" placeholder="Київ">
+                            <input type="text" th:field="*{city}"
+                                   th:classappend="${#fields.hasErrors('city')} ? 'is-invalid'"
+                                   class="form-control" placeholder="Київ">
+                            <div class="invalid-feedback" th:errors="*{city}"></div>
                         </div>
 
                         <div class="mb-3">
@@ -45,20 +52,20 @@
                                         <input class="form-check-input category-check" type="checkbox"
                                                name="categoryIds" th:value="${cat.id}"
                                                th:id="'cat' + ${cat.id}"
-                                               th:checked="${announcement != null && announcement.categories.contains(cat)}">
+                                               th:checked="${announcementForm.categoryIds != null && announcementForm.categoryIds.contains(cat.id)}">
                                         <label class="form-check-label" th:for="'cat' + ${cat.id}"
                                                th:text="${cat.name}"></label>
                                     </div>
                                 </div>
                             </div>
                             <div id="categoryError" class="text-danger small mt-1 d-none">Оберіть принаймні одну категорію</div>
+                            <div th:if="${#fields.hasErrors('categoryIds')}" class="text-danger small mt-1"
+                                 th:errors="*{categoryIds}"></div>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label fw-bold">Посилання на збір коштів <span class="text-muted fw-normal">(необов'язково)</span></label>
-                            <input type="url" name="donationUrl" class="form-control"
-                                   th:value="${announcement?.donationUrl}"
-                                   >
+                            <input type="url" th:field="*{donationUrl}" class="form-control">
                             <div class="form-text">Вкажіть посилання на Monobank банку або ПриватБанк конверт, якщо хочете приймати фінансову підтримку</div>
                         </div>
 
@@ -66,7 +73,7 @@
                         <div sec:authorize="hasRole('PROVIDER')" class="mb-3 form-check">
                             <input type="checkbox" class="form-check-input" name="acceptsApplications"
                                    id="acceptsApps"
-                                   th:checked="${announcement == null || announcement.acceptsApplications}">
+                                   th:checked="${announcementForm.acceptsApplications == null || announcementForm.acceptsApplications}">
                             <label class="form-check-label" for="acceptsApps">Приймати заявки від ВПО</label>
                         </div>
 

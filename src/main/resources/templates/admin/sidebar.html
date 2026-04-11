@@ -8,7 +8,7 @@
             <p class="text-muted small mb-0" th:text="${user.email}"></p>
         </div>
         <ul class="list-group list-group-flush sidebar-nav">
-            <li th:classappend="${requestURI == '/admin/moderation'} ? 'active-item'" class="list-group-item">
+            <li class="list-group-item">
                 <a href="/admin/moderation" class="text-decoration-none text-dark">
                     Модерація
                     <span th:if="${pendingCount != null and pendingCount > 0}"
@@ -16,7 +16,7 @@
                           th:text="${pendingCount}"></span>
                 </a>
             </li>
-            <li th:classappend="${requestURI == '/admin/users'} ? 'active-item'" class="list-group-item">
+            <li class="list-group-item">
                 <a href="/admin/users" class="text-decoration-none text-dark">Користувачі</a>
             </li>
             <li class="list-group-item">

@@ -1,6 +1,6 @@
 package com.kosmanenko.vpo_humanitarian_aid_platform.config;
 
-import com.kosmanenko.vpo_humanitarian_aid_platform.service.CustomUserDetailsService;
+import com.kosmanenko.vpo_humanitarian_aid_platform.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,10 +11,15 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -22,8 +27,8 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final CustomUserDetailsService userDetailsService;
-    private final OAuth2SuccessHandler oAuth2SuccessHandler;
+    private final OAuth2LoginHandler oAuth2SuccessHandler;
+    private final UserRepository userRepository;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -31,9 +36,24 @@ public class SecurityConfig {
     }
 
     @Bean
+    public UserDetailsService userDetailsService() {
+        return email -> {
+            var user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Користувача не знайдено: " + email));
+            boolean enabled = !Boolean.TRUE.equals(user.getIsBlocked());
+            return new org.springframework.security.core.userdetails.User(
+                user.getEmail(),
+                user.getPasswordHash() != null ? user.getPasswordHash() : "",
+                enabled, true, true, true,
+                List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()))
+            );
+        };
+    }
+
+    @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userDetailsService);
+        provider.setUserDetailsService(userDetailsService());
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }

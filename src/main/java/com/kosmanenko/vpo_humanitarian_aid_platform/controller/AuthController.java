@@ -3,16 +3,10 @@ package com.kosmanenko.vpo_humanitarian_aid_platform.controller;
 import com.kosmanenko.vpo_humanitarian_aid_platform.dto.RegisterForm;
 import com.kosmanenko.vpo_humanitarian_aid_platform.enums.ProviderType;
 import com.kosmanenko.vpo_humanitarian_aid_platform.enums.UserRole;
-import com.kosmanenko.vpo_humanitarian_aid_platform.service.AuthService;
-import com.kosmanenko.vpo_humanitarian_aid_platform.service.CustomUserDetailsService;
-import jakarta.servlet.http.HttpServletRequest;
+import com.kosmanenko.vpo_humanitarian_aid_platform.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,8 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final AuthService authService;
-    private final CustomUserDetailsService userDetailsService;
+    private final UserService userService;
 
     @GetMapping("/login")
     public String loginPage(@RequestParam(required = false) String error,
@@ -53,7 +46,7 @@ public class AuthController {
             return "auth/register";
         }
 
-        if (authService.emailExists(form.getEmail())) {
+        if (userService.emailExists(form.getEmail())) {
             bindingResult.rejectValue("email", "email.exists",
                 "Акаунт з таким email вже існує. Увійдіть або відновіть пароль");
             return "auth/register";
@@ -63,7 +56,7 @@ public class AuthController {
             UserRole userRole = UserRole.valueOf(form.getRole());
             ProviderType pType = (form.getProviderType() != null && !form.getProviderType().isBlank())
                 ? ProviderType.valueOf(form.getProviderType()) : null;
-            authService.register(form.getEmail(), form.getPassword(), form.getFullName(),
+            userService.register(form.getEmail(), form.getPassword(), form.getFullName(),
                 form.getPhone(), form.getCity(), userRole, pType, form.getOrgName());
             redirectAttributes.addFlashAttribute("success", "Реєстрацію успішно завершено. Увійдіть у систему.");
             return "redirect:/auth/login";
@@ -90,7 +83,6 @@ public class AuthController {
             @RequestParam(required = false) String phone,
             @RequestParam(required = false) String city,
             HttpSession session,
-            HttpServletRequest request,
             RedirectAttributes redirectAttributes) {
 
         String email = (String) session.getAttribute("oauth_email");
@@ -104,21 +96,11 @@ public class AuthController {
             UserRole userRole = UserRole.valueOf(role);
             ProviderType pType = (providerType != null && !providerType.isBlank())
                 ? ProviderType.valueOf(providerType) : null;
-            authService.registerOAuth(email, name, userRole, pType, phone, city);
+            userService.registerOAuth(email, name, userRole, pType, phone, city);
             session.removeAttribute("oauth_email");
             session.removeAttribute("oauth_name");
-
-            // Re-authenticate as UserDetails so @AuthenticationPrincipal works in controllers
-            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-            UsernamePasswordAuthenticationToken auth =
-                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(auth);
-            request.getSession().setAttribute(
-                HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
-                SecurityContextHolder.getContext());
-
-            redirectAttributes.addFlashAttribute("success", "Реєстрацію завершено!");
-            return "redirect:/";
+            redirectAttributes.addFlashAttribute("success", "Реєстрацію завершено! Увійдіть через Google.");
+            return "redirect:/auth/login";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Помилка: " + e.getMessage());
             return "redirect:/auth/oauth2/complete";
