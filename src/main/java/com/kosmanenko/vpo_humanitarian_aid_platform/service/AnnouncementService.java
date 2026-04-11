@@ -12,16 +12,13 @@ import com.kosmanenko.vpo_humanitarian_aid_platform.model.User;
 import com.kosmanenko.vpo_humanitarian_aid_platform.repository.AnnouncementRepository;
 import com.kosmanenko.vpo_humanitarian_aid_platform.repository.CategoryRepository;
 import com.kosmanenko.vpo_humanitarian_aid_platform.repository.HelpApplicationRepository;
-import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -48,6 +45,10 @@ public class AnnouncementService {
         return announcementRepository.findByStatusOrderByCreatedAtDesc(AnnouncementStatus.PENDING);
     }
 
+    public long countPending() {
+        return announcementRepository.countByStatus(AnnouncementStatus.PENDING);
+    }
+
     public List<Announcement> findTop6Offers() {
         return announcementRepository.findTop6ByStatusAndTypeOrderByCreatedAtDesc(
             AnnouncementStatus.PUBLISHED, AnnouncementType.OFFER);
@@ -58,45 +59,21 @@ public class AnnouncementService {
             AnnouncementStatus.PUBLISHED, AnnouncementType.REQUEST);
     }
 
+    public List<Category> findAllCategories() {
+        return categoryRepository.findAll();
+    }
+
     public Page<Announcement> search(AnnouncementType type, String city, Long categoryId, String keyword, int page) {
         PageRequest pageable = PageRequest.of(page, 12);
-        String cityLike = (city != null && !city.isBlank()) ? "%" + city.toLowerCase() + "%" : null;
-        String keywordLike = (keyword != null && !keyword.isBlank()) ? "%" + keyword.toLowerCase() + "%" : null;
-
-        Specification<Announcement> spec = (root, query, cb) -> {
-            List<Predicate> predicates = new ArrayList<>();
-            predicates.add(cb.equal(root.get("status"), AnnouncementStatus.PUBLISHED));
-            if (type != null) {
-                predicates.add(cb.equal(root.get("type"), type));
-            }
-            if (cityLike != null) {
-                predicates.add(cb.like(cb.lower(root.get("city")), cityLike));
-            }
-            if (keywordLike != null) {
-                predicates.add(cb.or(
-                    cb.like(cb.lower(root.get("title")), keywordLike),
-                    cb.like(cb.lower(root.get("description")), keywordLike)
-                ));
-            }
-            if (categoryId != null) {
-                predicates.add(cb.equal(root.join("categories").get("id"), categoryId));
-                query.distinct(true);
-            }
-            query.orderBy(cb.desc(root.get("createdAt")));
-            return cb.and(predicates.toArray(new Predicate[0]));
-        };
-
-        return announcementRepository.findAll(spec, pageable);
+        String cityParam = (city != null && !city.isBlank()) ? "%" + city.toLowerCase() + "%" : null;
+        String keywordParam = (keyword != null && !keyword.isBlank()) ? "%" + keyword.toLowerCase() + "%" : null;
+        return announcementRepository.searchPublished(type, cityParam, categoryId, keywordParam, pageable);
     }
 
     @Transactional
     public Announcement create(String title, String description, String city,
                                AnnouncementType type, Boolean acceptsApplications,
                                List<Long> categoryIds, User author, String donationUrl) {
-        Set<Category> categories = categoryIds.stream()
-            .map(id -> categoryRepository.findById(id).orElseThrow())
-            .collect(Collectors.toSet());
-
         Announcement announcement = Announcement.builder()
             .title(title)
             .description(description)
@@ -105,7 +82,7 @@ public class AnnouncementService {
             .status(AnnouncementStatus.PENDING)
             .acceptsApplications(acceptsApplications != null ? acceptsApplications : true)
             .author(author)
-            .categories(categories)
+            .categories(resolveCategories(categoryIds))
             .donationUrl(donationUrl != null && !donationUrl.isBlank() ? donationUrl : null)
             .build();
 
@@ -129,15 +106,11 @@ public class AnnouncementService {
             throw new RuntimeException("Редагувати можна лише оголошення в статусі 'На модерації' або 'Відхилено'");
         }
 
-        Set<Category> categories = categoryIds.stream()
-            .map(catId -> categoryRepository.findById(catId).orElseThrow())
-            .collect(Collectors.toSet());
-
         announcement.setTitle(title);
         announcement.setDescription(description);
         announcement.setCity(city);
         announcement.setAcceptsApplications(acceptsApplications != null ? acceptsApplications : true);
-        announcement.setCategories(categories);
+        announcement.setCategories(resolveCategories(categoryIds));
         announcement.setDonationUrl(donationUrl != null && !donationUrl.isBlank() ? donationUrl : null);
         announcement.setStatus(AnnouncementStatus.PENDING);
         announcement.setRejectionReason(null);
@@ -181,5 +154,11 @@ public class AnnouncementService {
         }
         a.setStatus(AnnouncementStatus.COMPLETED);
         announcementRepository.save(a);
+    }
+
+    private Set<Category> resolveCategories(List<Long> categoryIds) {
+        return categoryIds.stream()
+            .map(id -> categoryRepository.findById(id).orElseThrow())
+            .collect(Collectors.toSet());
     }
 }

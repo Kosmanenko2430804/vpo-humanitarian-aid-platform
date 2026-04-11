@@ -48,7 +48,7 @@ class NotificationServiceTest {
     void notify_savesNotification_andSendsEmail() {
         when(notificationRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
-        notificationService.notify(user, "Тестове повідомлення");
+        notificationService.notify(user, "Тестове повідомлення", "Тема");
 
         ArgumentCaptor<Notification> captor = ArgumentCaptor.forClass(Notification.class);
         verify(notificationRepository).save(captor.capture());

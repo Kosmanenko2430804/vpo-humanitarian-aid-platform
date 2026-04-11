@@ -4,8 +4,6 @@ import com.kosmanenko.vpo_humanitarian_aid_platform.enums.ProviderType;
 import com.kosmanenko.vpo_humanitarian_aid_platform.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.BatchSize;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -55,7 +53,6 @@ public class User {
     private Boolean isBlocked = false;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @BatchSize(size = 30)
     @JoinTable(
         name = "provider_categories",
         joinColumns = @JoinColumn(name = "user_id"),

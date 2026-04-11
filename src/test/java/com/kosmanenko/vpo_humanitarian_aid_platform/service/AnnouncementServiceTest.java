@@ -22,7 +22,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,8 +31,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 /**
- * Модульні тести для {@link AnnouncementService}.
- * Усі залежності замінені мок-об'єктами (Mockito), БД не використовується.
+ * Тести для сервісу оголошень
  */
 @ExtendWith(MockitoExtension.class)
 class AnnouncementServiceTest {
@@ -98,16 +96,21 @@ class AnnouncementServiceTest {
         assertThat(result.get(0).getStatus()).isEqualTo(AnnouncementStatus.PENDING);
     }
 
-    //search без categoryId — викликає findAll зі специфікацією
+    // search — передає параметри у репозиторій як LIKE-шаблони
     @Test
-    void search_withoutCategory_usesSpecification() {
+    void search_passesLikePatternsToRepository() {
         Page<Announcement> page = new PageImpl<>(List.of());
-        when(announcementRepository.findAll(any(Specification.class), any(PageRequest.class)))
+        when(announcementRepository.searchPublished(any(), any(), any(), any(), any(PageRequest.class)))
             .thenReturn(page);
 
         announcementService.search(AnnouncementType.OFFER, "Київ", null, "допомога", 0);
 
-        verify(announcementRepository).findAll(any(Specification.class), any(PageRequest.class));
+        verify(announcementRepository).searchPublished(
+                eq(AnnouncementType.OFFER),
+                eq("%київ%"),
+                isNull(),
+                eq("%допомога%"),
+                any(PageRequest.class));
     }
 
     //create — створює оголошення зі статусом PENDING та публікує подію
@@ -195,7 +198,6 @@ class AnnouncementServiceTest {
         announcementService.approve(1L);
 
         assertThat(a.getStatus()).isEqualTo(AnnouncementStatus.PUBLISHED);
-        assertThat(a.getPublishedAt()).isNotNull();
         verify(eventPublisher).publishEvent(any(AnnouncementApprovedEvent.class));
     }
 
@@ -211,18 +213,6 @@ class AnnouncementServiceTest {
         assertThat(a.getStatus()).isEqualTo(AnnouncementStatus.REJECTED);
         assertThat(a.getRejectionReason()).isEqualTo("Порушення правил");
         verify(eventPublisher).publishEvent(any(AnnouncementRejectedEvent.class));
-    }
-
-    //archive — встановлює статус ARCHIVED та фіксує час архівування
-    @Test
-    void archive_setsArchivedStatus_andTimestamp() {
-        Announcement a = Announcement.builder().id(1L).status(AnnouncementStatus.PUBLISHED).build();
-        when(announcementRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
-
-        announcementService.archive(a);
-
-        assertThat(a.getStatus()).isEqualTo(AnnouncementStatus.ARCHIVED);
-        assertThat(a.getArchivedAt()).isNotNull();
     }
 
     //complete — кидає виняток якщо є активні заявки

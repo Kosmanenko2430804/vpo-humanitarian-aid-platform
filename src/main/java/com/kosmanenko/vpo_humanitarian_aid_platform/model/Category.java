@@ -3,9 +3,6 @@ package com.kosmanenko.vpo_humanitarian_aid_platform.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @Entity
 @Table(name = "categories")
 @Getter
@@ -21,7 +18,4 @@ public class Category {
 
     @Column(nullable = false, unique = true)
     private String name;
-
-    @ManyToMany(mappedBy = "providerCategories", fetch = FetchType.LAZY)
-    private Set<User> providers = new HashSet<>();
 }

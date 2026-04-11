@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      th:replace="~{layout/base :: layout(~{::title}, ~{::main})}"
+      th:replace="~{base :: layout(~{::title}, ~{::main})}"
       lang="uk">
 <head>
     <title th:text="${announcement.title} + ' — ВПО Платформа'">Оголошення</title>

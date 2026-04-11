@@ -3,12 +3,8 @@ package com.kosmanenko.vpo_humanitarian_aid_platform.controller;
 import com.kosmanenko.vpo_humanitarian_aid_platform.service.AnnouncementService;
 import com.kosmanenko.vpo_humanitarian_aid_platform.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -24,12 +20,11 @@ public class AdminController {
     private final UserService userService;
 
     @ModelAttribute
-    public void populateSidebar(@AuthenticationPrincipal UserDetails userDetails, Model model) {
-        if (userDetails != null) {
-            userService.findByEmail(userDetails.getUsername())
-                    .ifPresent(u -> model.addAttribute("user", u));
+    public void populateSidebar(Authentication auth, Model model) {
+        if (auth != null) {
+            model.addAttribute("user", userService.findByAuthentication(auth));
         }
-        model.addAttribute("pendingCount", announcementService.findPending().size());
+        model.addAttribute("pendingCount", announcementService.countPending());
     }
 
     @GetMapping
@@ -44,30 +39,19 @@ public class AdminController {
     }
 
     @PostMapping("/moderation/{id}/approve")
-    public ResponseEntity<?> approve(@PathVariable Long id,
-                                     @RequestHeader(value = "HX-Request", required = false) String htmxRequest,
-                                     RedirectAttributes redirectAttributes) {
+    public String approve(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         announcementService.approve(id);
-        if (htmxRequest != null) {
-            return ResponseEntity.ok("");
-        }
         redirectAttributes.addFlashAttribute("success", "Оголошення опубліковано");
-        return ResponseEntity.status(HttpStatus.FOUND)
-                .header(HttpHeaders.LOCATION, "/admin/moderation").build();
+        return "redirect:/admin/moderation";
     }
 
     @PostMapping("/moderation/{id}/reject")
-    public ResponseEntity<?> reject(@PathVariable Long id,
-                                    @RequestParam String reason,
-                                    @RequestHeader(value = "HX-Request", required = false) String htmxRequest,
-                                    RedirectAttributes redirectAttributes) {
+    public String reject(@PathVariable Long id,
+                         @RequestParam String reason,
+                         RedirectAttributes redirectAttributes) {
         announcementService.reject(id, reason);
-        if (htmxRequest != null) {
-            return ResponseEntity.ok("");
-        }
         redirectAttributes.addFlashAttribute("success", "Оголошення відхилено");
-        return ResponseEntity.status(HttpStatus.FOUND)
-                .header(HttpHeaders.LOCATION, "/admin/moderation").build();
+        return "redirect:/admin/moderation";
     }
 
     @GetMapping("/users")
@@ -82,5 +66,4 @@ public class AdminController {
         redirectAttributes.addFlashAttribute("success", "Статус користувача змінено");
         return "redirect:/admin/users";
     }
-
 }

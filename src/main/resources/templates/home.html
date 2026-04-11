@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      th:replace="~{layout/base :: layout(~{::title}, ~{::main})}"
+      th:replace="~{base :: layout(~{::title}, ~{::main})}"
       lang="uk">
 <head>
     <title>ВПО Платформа &mdash; Координація гуманітарної допомоги</title>
@@ -9,7 +9,7 @@
 <body>
 <main>
 <!-- Hero Section -->
-<div class="hero-section text-white py-4 mb-4">
+<div class="bg-primary text-white py-4 mb-4">
     <div class="container">
         <h1 class="fw-bold">Платформа допомоги ВПО</h1>
         <p class="mb-0 opacity-90">Об'єднуємо тих, хто потребує підтримки, з волонтерами та організаціями, що готові допомогти</p>
@@ -137,7 +137,7 @@
             <p class="text-muted mb-3">Платформа існує завдяки підтримці небайдужих людей. Кошти спрямовуються на підтримку технічної інфраструктури, розвиток нових можливостей та безперебійну роботу сервісу для ВПО і волонтерів.</p>
             <form action="/payment/platform" method="post"
                   class="d-flex gap-2 align-items-center flex-wrap">
-                <input type="number" name="amount" class="form-control no-spinner" style="max-width:160px;"
+                <input type="number" name="amount" class="form-control" style="max-width:160px;"
                        min="1" max="100000" step="1" required placeholder="Сума (грн)">
                 <button type="submit" class="btn btn-primary">Підтримати</button>
             </form>

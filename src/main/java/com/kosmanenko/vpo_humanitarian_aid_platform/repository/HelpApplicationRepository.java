@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface HelpApplicationRepository extends JpaRepository<HelpApplication, Long> {
-List<HelpApplication> findByAnnouncement(Announcement announcement);
+    List<HelpApplication> findByAnnouncement(Announcement announcement);
     boolean existsByAnnouncementAndApplicant(Announcement announcement, User applicant);
     boolean existsByAnnouncementAndStatusIn(Announcement announcement, List<ApplicationStatus> statuses);
     List<HelpApplication> findByApplicantOrderByCreatedAtDesc(User applicant);

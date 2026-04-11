@@ -1,13 +1,9 @@
 package com.kosmanenko.vpo_humanitarian_aid_platform.config;
 
-import com.kosmanenko.vpo_humanitarian_aid_platform.enums.AnnouncementStatus;
-import com.kosmanenko.vpo_humanitarian_aid_platform.enums.AnnouncementType;
 import com.kosmanenko.vpo_humanitarian_aid_platform.enums.ProviderType;
 import com.kosmanenko.vpo_humanitarian_aid_platform.enums.UserRole;
-import com.kosmanenko.vpo_humanitarian_aid_platform.model.Announcement;
 import com.kosmanenko.vpo_humanitarian_aid_platform.model.Category;
 import com.kosmanenko.vpo_humanitarian_aid_platform.model.User;
-import com.kosmanenko.vpo_humanitarian_aid_platform.repository.AnnouncementRepository;
 import com.kosmanenko.vpo_humanitarian_aid_platform.repository.CategoryRepository;
 import com.kosmanenko.vpo_humanitarian_aid_platform.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +14,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -29,7 +24,6 @@ public class DataInitializer implements ApplicationRunner {
 
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
-    private final AnnouncementRepository announcementRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -55,7 +49,7 @@ public class DataInitializer implements ApplicationRunner {
         for (String name : names) {
             if (!categoryRepository.existsByName(name)) {
                 categoryRepository.save(Category.builder().name(name).build());
-                log.info("Created category: {}", name);
+                log.info("Додано категорію: {}", name);
             }
         }
     }
@@ -70,7 +64,7 @@ public class DataInitializer implements ApplicationRunner {
                 .isBlocked(false)
                 .isProfilePublic(false)
                 .build());
-            log.info("Created admin user");
+            log.info("Створено акаунт адміністратора");
         }
 
         if (!userRepository.existsByEmail("vpo@test.ua")) {
@@ -83,7 +77,7 @@ public class DataInitializer implements ApplicationRunner {
                 .isBlocked(false)
                 .isProfilePublic(false)
                 .build());
-            log.info("Created VPO test user");
+            log.info("Створено тестового користувача ВПО");
         }
 
         if (!userRepository.existsByEmail("provider@test.ua")) {
@@ -102,7 +96,7 @@ public class DataInitializer implements ApplicationRunner {
                 .providerCategories(foodCategory != null ? Set.of(foodCategory) : Set.of())
                 .build();
             userRepository.save(provider);
-            log.info("Created provider test user");
+            log.info("Створено тестового провайдера");
         }
     }
 }

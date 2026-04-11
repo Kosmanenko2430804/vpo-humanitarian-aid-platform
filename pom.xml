@@ -103,10 +103,6 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.12</version>
-				<configuration>
-					<destFile>C:/jacoco-vpo/jacoco.exec</destFile>
-					<dataFile>C:/jacoco-vpo/jacoco.exec</dataFile>
-				</configuration>
 				<executions>
 					<execution>
 						<goals>
@@ -114,7 +110,7 @@
 						</goals>
 						<configuration>
 							<propertyName>jacocoArgLine</propertyName>
-							<destFile>C:/jacoco-vpo/jacoco.exec</destFile>
+							<destFile>${project.build.directory}/jacoco.exec</destFile>
 						</configuration>
 					</execution>
 					<execution>
