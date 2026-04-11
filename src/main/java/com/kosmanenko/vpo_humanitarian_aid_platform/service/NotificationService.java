@@ -13,7 +13,6 @@ import com.kosmanenko.vpo_humanitarian_aid_platform.model.User;
 import com.kosmanenko.vpo_humanitarian_aid_platform.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -30,9 +29,6 @@ public class NotificationService {
 
     private final NotificationRepository notificationRepository;
     private final JavaMailSender mailSender;
-
-    @Value("${app.base-url}")
-    private String baseUrl;
 
     @EventListener
     @Transactional
@@ -51,8 +47,7 @@ public class NotificationService {
         String body = "Вітаємо, " + a.getAuthor().getFullName() + "!\n\n" +
             "На жаль, ваше оголошення «" + a.getTitle() + "» не пройшло модерацію.\n\n" +
             "Причина: " + event.reason() + "\n\n" +
-            "Ви можете відредагувати оголошення та надіслати його повторно у вашому кабінеті: " +
-            baseUrl + "/cabinet/announcements\n\n" +
+            "Ви можете відредагувати оголошення та надіслати його повторно у вашому кабінеті.\n\n" +
             "З повагою,\nКоманда ВПО Допомога";
         notify(a.getAuthor(), body, "Оголошення відхилено модератором");
     }
@@ -64,7 +59,6 @@ public class NotificationService {
         String body = "Вітаємо, " + a.getAuthor().getFullName() + "!\n\n" +
             event.message() + "\n\n" +
             "Очікуйте на результат модерації — ми надішлемо сповіщення після перевірки.\n\n" +
-            "Ваш кабінет: " + baseUrl + "/cabinet/announcements\n\n" +
             "З повагою,\nКоманда ВПО Допомога";
         notify(a.getAuthor(), body, "Оголошення надіслано на модерацію");
     }
@@ -78,7 +72,6 @@ public class NotificationService {
             "На ваше оголошення «" + app.getAnnouncement().getTitle() + "» надійшла нова заявка.\n\n" +
             "Заявник: " + app.getApplicant().getFullName() + "\n" +
             "Повідомлення: " + (app.getMessage() != null ? app.getMessage() : "—") + "\n\n" +
-            "Переглянути заявки: " + baseUrl + "/cabinet/applications\n\n" +
             "З повагою,\nКоманда ВПО Допомога";
         notify(author, body, "Нова заявка на ваше оголошення");
     }
@@ -95,7 +88,6 @@ public class NotificationService {
             "  Дата та час: " + date + "\n" +
             "  Місце: " + (app.getPickupLocation() != null ? app.getPickupLocation() : "уточнюється") + "\n" +
             "  Телефон для зв'язку: " + (app.getProviderPhone() != null ? app.getProviderPhone() : "уточнюється") + "\n\n" +
-            "Переглянути в кабінеті: " + baseUrl + "/cabinet/applications\n\n" +
             "З повагою,\nКоманда ВПО Допомога";
         notify(app.getApplicant(), body, "Вашу заявку прийнято");
     }
@@ -107,7 +99,6 @@ public class NotificationService {
         String body = "Вітаємо, " + app.getApplicant().getFullName() + "!\n\n" +
             "На жаль, вашу заявку на оголошення «" + app.getAnnouncement().getTitle() + "» відхилено.\n\n" +
             "Причина: " + event.reason() + "\n\n" +
-            "Ви можете переглянути інші оголошення на платформі: " + baseUrl + "/announcements\n\n" +
             "З повагою,\nКоманда ВПО Допомога";
         notify(app.getApplicant(), body, "Заявку відхилено");
     }
@@ -118,8 +109,6 @@ public class NotificationService {
         HelpApplication app = event.application();
         String body = "Вітаємо, " + app.getApplicant().getFullName() + "!\n\n" +
             "Заявку на оголошення «" + app.getAnnouncement().getTitle() + "» завершено.\n\n" +
-            "Будь ласка, залиште відгук про отриману допомогу — це допоможе іншим користувачам платформи.\n\n" +
-            "Залишити відгук: " + baseUrl + "/cabinet/applications\n\n" +
             "Дякуємо, що користуєтесь платформою!\n\nКоманда ВПО Допомога";
         notify(app.getApplicant(), body, "Заявку завершено — залиште відгук");
     }
